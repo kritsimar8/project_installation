@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:installation_project/Gauges.dart';
 import 'package:installation_project/test2.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,34 +13,88 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+ 
+
+  late final Animation<double> _animation = Tween<double>(
+    begin: 1,
+    end: 1.95,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+  late final Animation<double> _animation2 = Tween<double>(
+    begin: 1,
+    end: -.1,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+  late final Animation<double> _animation3 = Tween<double>(
+    begin: 0,
+    end: 60,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+  late final Animation<double> _animation4 = Tween<double>(
+    begin: -120,
+    end: 120,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOutQuad));
+
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 1500),
+      vsync: this,
+    )..forward();
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _controller.reverse();
+      }
+    });
+
+    super.initState();
+  }
+
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+  
+    super.dispose();
+  }
+
+  double i = 0;
+  Future<double?> increment() async {
+    for (i = 0; i < 100;) {
+      i += 1.0;
+      await Future.delayed(Duration(seconds: 1));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    // width = 508 height = 1130 high 
-    // width = 320 height = 711 
+    // width = 508 height = 1130 high
+    // width = 320 height = 711
+    print(_animation.value);
 
     double FontSize = MediaQuery.textScalerOf(context).scale(1);
 
-    print(FontSize);
+    // print(FontSize);
     final MyHeight = MediaQuery.of(context).size.height;
     final MyWidth = MediaQuery.of(context).size.width;
 
-     print('This is my Height' + MyHeight.toString());
-    print('This is my width' + MyWidth.toString());
+    // print('This is my Height' + MyHeight.toString());
+    // print('This is my width' + MyWidth.toString());
 
-
-    
     // final MyHeight = 875;
     // final MyWidth = 411;
-  
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-      
+
       body: Column(
-       crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: MyHeight*.05),
+          SizedBox(height: MyHeight * .05),
           Center(
             child: Container(
               height: MyHeight * .3,
@@ -52,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
-                borderRadius: BorderRadius.all(Radius.circular(MyHeight*.15)),
+                borderRadius: BorderRadius.all(Radius.circular(MyHeight * .15)),
               ),
               child: Stack(
                 children: [
@@ -64,7 +120,9 @@ class _HomePageState extends State<HomePage> {
 
                       decoration: BoxDecoration(
                         color: Colors.black,
-                        borderRadius: BorderRadius.all(Radius.circular(MyHeight*.15)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(MyHeight * .15),
+                        ),
                       ),
                     ),
                   ),
@@ -83,7 +141,9 @@ class _HomePageState extends State<HomePage> {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(MyHeight*.15)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(MyHeight * .15),
+                        ),
                       ),
                     ),
                   ),
@@ -95,7 +155,9 @@ class _HomePageState extends State<HomePage> {
 
                       decoration: BoxDecoration(
                         color: Colors.black,
-                        borderRadius: BorderRadius.all(Radius.circular(MyHeight*.15)),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(MyHeight * .15),
+                        ),
                       ),
                       child: Row(
                         children: [
@@ -105,12 +167,38 @@ class _HomePageState extends State<HomePage> {
 
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(MyHeight*.15),
-                                topLeft: Radius.circular(MyHeight*.15),
+                                bottomLeft: Radius.circular(MyHeight * .15),
+                                topLeft: Radius.circular(MyHeight * .15),
                               ),
                               color: const Color.fromARGB(0, 161, 30, 21),
                             ),
-                            child: CustomPaint(painter: CustomPaintDial()),
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  height: MyHeight * .258,
+                                  width: MyWidth * .288,
+
+                                  child: CustomPaint(
+                                    painter: CustomPaintDial(),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: MyHeight * .258,
+                                  width: MyWidth * .288,
+
+                                  child: AnimatedBuilder(
+                                    animation: _controller,
+                                    builder: (context, child) {
+                                      return CustomPaint(
+                                        painter: CustomDial2(
+                                          rotate: _animation.value,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           Container(
                             height: MyHeight * .258,
@@ -120,8 +208,8 @@ class _HomePageState extends State<HomePage> {
                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(top:MyHeight*.01),
-                                  height: MyHeight*.09,
+                                  padding: EdgeInsets.only(top: MyHeight * .01),
+                                  height: MyHeight * .09,
                                   width: MyWidth * .288,
                                   color: const Color.fromARGB(0, 255, 255, 255),
                                   child: Column(
@@ -133,8 +221,8 @@ class _HomePageState extends State<HomePage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Container(
-                                            height: MyHeight*.035,
-                                            width: MyWidth*.07,
+                                            height: MyHeight * .035,
+                                            width: MyWidth * .07,
 
                                             decoration: BoxDecoration(
                                               color: const Color.fromARGB(
@@ -150,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Text(
                                                 'AMP',
                                                 style: GoogleFonts.bebasNeue(
-                                                  fontSize: MyHeight*.018,
+                                                  fontSize: MyHeight * .018,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -158,8 +246,8 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Container(
-                                            height: MyHeight*.035,
-                                            width: MyWidth*.07,
+                                            height: MyHeight * .035,
+                                            width: MyWidth * .07,
                                             decoration: BoxDecoration(
                                               color: const Color.fromARGB(
                                                 45,
@@ -174,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Text(
                                                 'CFM',
                                                 style: GoogleFonts.bebasNeue(
-                                                 fontSize: MyHeight*.018,
+                                                  fontSize: MyHeight * .018,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -182,8 +270,8 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Container(
-                                            height: MyHeight*.035,
-                                            width: MyWidth*.08,
+                                            height: MyHeight * .035,
+                                            width: MyWidth * .08,
 
                                             decoration: BoxDecoration(
                                               color: const Color.fromARGB(
@@ -199,7 +287,8 @@ class _HomePageState extends State<HomePage> {
                                               child: Text(
                                                 'S.TMP',
                                                 style: GoogleFonts.bebasNeue(
-                                                  fontSize: MyHeight*.035*.5,
+                                                  fontSize:
+                                                      MyHeight * .035 * .5,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -213,8 +302,8 @@ class _HomePageState extends State<HomePage> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Container(
-                                            height: MyHeight*.035,
-                                            width: MyWidth*.07,
+                                            height: MyHeight * .035,
+                                            width: MyWidth * .07,
 
                                             decoration: BoxDecoration(
                                               color: const Color.fromARGB(
@@ -230,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Text(
                                                 'PR',
                                                 style: GoogleFonts.bebasNeue(
-                                                  fontSize: MyHeight*.018,
+                                                  fontSize: MyHeight * .018,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -238,8 +327,8 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Container(
-                                           height: MyHeight*.035,
-                                            width: MyWidth*.07,
+                                            height: MyHeight * .035,
+                                            width: MyWidth * .07,
                                             decoration: BoxDecoration(
                                               color: const Color.fromARGB(
                                                 45,
@@ -254,7 +343,7 @@ class _HomePageState extends State<HomePage> {
                                               child: Text(
                                                 'WT',
                                                 style: GoogleFonts.bebasNeue(
-                                                fontSize: MyHeight*.018,
+                                                  fontSize: MyHeight * .018,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
                                                 ),
@@ -262,8 +351,8 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           Container(
-                                           height: MyHeight*.035,
-                                            width: MyWidth*.08,
+                                            height: MyHeight * .035,
+                                            width: MyWidth * .08,
                                             decoration: BoxDecoration(
                                               color: const Color.fromARGB(
                                                 45,
@@ -278,10 +367,9 @@ class _HomePageState extends State<HomePage> {
                                               child: Text(
                                                 'D.TMP',
                                                 style: GoogleFonts.bebasNeue(
-                                                fontSize: MyHeight*.017,
+                                                  fontSize: MyHeight * .017,
                                                   color: Colors.black,
                                                   fontWeight: FontWeight.bold,
-                                                  
                                                 ),
                                               ),
                                             ),
@@ -305,8 +393,30 @@ class _HomePageState extends State<HomePage> {
                                           67,
                                           54,
                                         ),
-                                        child: CustomPaint(
-                                          painter: CustomPainter10(),
+                                        child: Stack(
+                                          children: [
+                                            SizedBox(
+                                              height: MyHeight * .1,
+                                              width: MyWidth * .288,
+                                              child: CustomPaint(
+                                                painter: CustomPainter10(),
+                                              ),
+                                            ),
+                                            AnimatedBuilder(
+                                              animation: _controller,
+                                              builder: (context, child) {
+                                                return SizedBox(
+                                                  height: MyHeight * .1,
+                                                  width: MyWidth * .288,
+                                                  child: CustomPaint(
+                                                    painter: CustomGasInd(
+                                                      rotate: _animation3.value,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       Padding(
@@ -319,9 +429,8 @@ class _HomePageState extends State<HomePage> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: GoogleFonts.robotoMono(
-                                            fontSize: MyHeight*.012,
+                                            fontSize: MyHeight * .012,
                                             color: Colors.white,
-                                            
                                           ),
                                         ),
                                       ),
@@ -329,10 +438,13 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Container(
-                                  padding: FontSize<=1.3? EdgeInsets.only(
-                                    left: MyWidth * .042,
-                                    right: MyWidth * .042,
-                                  ): EdgeInsets.all(0),
+                                  padding:
+                                      FontSize <= 1.3
+                                          ? EdgeInsets.only(
+                                            left: MyWidth * .042,
+                                            right: MyWidth * .042,
+                                          )
+                                          : EdgeInsets.all(0),
                                   height: MyHeight * .03,
                                   width: MyWidth * .288,
                                   color: const Color.fromARGB(0, 33, 149, 243),
@@ -342,26 +454,31 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Text(
                                         '+2',
-                                         maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.robotoMono(
-                                          fontSize: MyHeight*.011,
+                                          fontSize: MyHeight * .011,
                                           color: Colors.white,
                                         ),
                                       ),
                                       Text(
                                         '+1',
                                         style: GoogleFonts.robotoMono(
-                                          fontSize: MyHeight*.012,
+                                          fontSize: MyHeight * .012,
                                           color: Colors.white,
                                         ),
                                       ),
                                       Container(
-                                        height: MyHeight*.017,
-                                        width: MyWidth*.048,
+                                        height: MyHeight * .017,
+                                        width: MyWidth * .048,
 
                                         decoration: BoxDecoration(
-                                          color: const Color.fromARGB(0, 255, 255, 255),
+                                          color: const Color.fromARGB(
+                                            0,
+                                            255,
+                                            255,
+                                            255,
+                                          ),
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(5),
                                           ),
@@ -369,26 +486,26 @@ class _HomePageState extends State<HomePage> {
                                         child: Center(
                                           child: Icon(
                                             Icons.do_disturb_on_outlined,
-                                            size: MyWidth*.03,
+                                            size: MyWidth * .03,
                                             color: Colors.white,
-                                          )
+                                          ),
                                         ),
                                       ),
                                       Text(
                                         '-1',
-                                         maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.robotoMono(
-                                          fontSize: MyHeight*.01,
+                                          fontSize: MyHeight * .01,
                                           color: Colors.white,
                                         ),
                                       ),
                                       Text(
                                         '-2',
-                                         maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.robotoMono(
-                                          fontSize: MyHeight*.01,
+                                          fontSize: MyHeight * .01,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -398,10 +515,10 @@ class _HomePageState extends State<HomePage> {
                                 Spacer(),
                                 Text(
                                   'S.TEMP || WEIGHT',
-                                   maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.robotoMono(
-                                    fontSize: MyHeight*.012,
+                                    fontSize: MyHeight * .012,
                                     fontWeight: FontWeight.w600,
                                     color: const Color.fromARGB(
                                       255,
@@ -419,12 +536,36 @@ class _HomePageState extends State<HomePage> {
                             width: MyWidth * .288,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(MyHeight*.15),
-                                topRight: Radius.circular(MyHeight*.15),
+                                bottomRight: Radius.circular(MyHeight * .15),
+                                topRight: Radius.circular(MyHeight * .15),
                               ),
                               color: const Color.fromARGB(0, 161, 30, 21),
                             ),
-                            child: CustomPaint(painter: CustomPaintDial2()),
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  height: MyHeight * .258,
+                                  width: MyWidth * .288,
+                                  child: CustomPaint(
+                                    painter: CustomPaintDial2(),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: MyHeight * .258,
+                                  width: MyWidth * .288,
+                                  child: AnimatedBuilder(
+                                    animation: _animation2,
+                                    builder: (context, child) {
+                                      return CustomPaint(
+                                        painter: CustomDial3(
+                                          rotate: _animation2.value,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -432,24 +573,72 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-            ),
+            ),  
           ),
-          SizedBox(height: MyHeight*.02),
+          SizedBox(height: MyHeight * .02),
           Row(
-             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
                 height: MyHeight * .28,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 0, 0, 0),
-                child: CustomPaint(painter: CustomPainterGauge()),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: CustomPainterGauge()),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child:AnimatedBuilder(
+                        animation: _animation4,
+                        builder: (context,child) {
+                          return CustomPaint(painter: Stick(
+                            rotation: _animation4.value
+                          ));
+                        }
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: Readings()),
+                    ),
+                  ],
+                ),
               ),
               Container(
                 height: MyHeight * .28,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 0, 0, 0),
-                child: CustomPaint(
-                  painter: CustomPainterGauge(),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: CustomPainterGauge()),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child:AnimatedBuilder(
+                        animation: _animation4,
+                        builder: (context,child) {
+                          return CustomPaint(painter: Stick(
+                            rotation: _animation4.value
+                          ));
+                        }
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: Readings()),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -461,257 +650,173 @@ class _HomePageState extends State<HomePage> {
                 height: MyHeight * .28,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 0, 0, 0),
-                child: CustomPaint(
-                  painter: CustomPainterGauge(),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: CustomPainterGauge()),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child:AnimatedBuilder(
+                        animation: _animation4,
+                        builder: (context,child) {
+                          return CustomPaint(painter: Stick(
+                            rotation: _animation4.value
+                          ));
+                        }
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: Readings()),
+                    ),
+                  ],
                 ),
               ),
               Container(
                 height: MyHeight * .28,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 0, 0, 0),
-                child: CustomPaint(
-                  painter: CustomPainterGauge(),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: CustomPainterGauge()),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: AnimatedBuilder(
+                        animation: _animation4,
+                        builder: (context,child) {
+                          return CustomPaint(painter: Stick(
+                            rotation: _animation4.value
+                          ));
+                        }
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: Readings()),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-         
         ],
       ),
     );
   }
 }
 
-class CustomPainterGauge extends CustomPainter {
+class CustomDial2 extends CustomPainter {
+  double rotate;
+  CustomDial2({required this.rotate});
   @override
   void paint(Canvas canvas, Size size) {
-    double centerX = size.width * .5;
-    double centerY = size.height * .5;
+    final midPoint = Offset(size.width * .77, size.height * .5);
+    var paintStick =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = 5;
 
-    double radius = size.width*.5;
+    canvas.save();
 
-    double outerRadius = radius- size.width*.1;
-    double outerRadius2 =  radius- size.width*.21;
-    double innerRadius = radius-size.width*.3;
-    double innerRadius2 =  radius- size.width*.15;
+    canvas.translate(midPoint.dx, midPoint.dy);
 
-    final textstyle = TextStyle(
-      color: const Color.fromARGB(244, 103, 101, 101),
-      fontSize: size.width*.18,
-      fontWeight: FontWeight.bold,
-       fontFamily: 'Text'
+    double angle = rotate * 192 * (3.14159 / 180);
 
-      // fontStyle: FontStyle.italic
-    );
-    final textstyle2 = TextStyle(
-      color: const Color.fromARGB(244, 103, 101, 101),
-      fontSize: size.width*.05,
-      fontWeight: FontWeight.bold,
-      fontFamily: 'Text'
+    canvas.rotate(angle);
+    canvas.translate(-midPoint.dx, -midPoint.dy);
 
-      // fontStyle: FontStyle.italic
-    );
+    final path = Path();
+    path.moveTo(size.width * .79, size.height * .6);
+    path.lineTo(size.width * .65, size.height * .25);
+    path.lineTo(size.width * .83, size.height * .595);
+    // path.lineTo(size.width*.935, size.height*.6);
+    // path.lineTo(size.width*.95, size.height*.4);
 
-    final textSpan = TextSpan(text: '10', style: textstyle);
-    final textSpan2 = TextSpan(text: 'Amp', style: textstyle2);
-
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
-    final textPainter2 = TextPainter(
-      text: textSpan2,
-      textDirection: TextDirection.ltr,
-    );
-
-    textPainter.layout(minWidth: 0, maxWidth: size.width);
-    textPainter2.layout(minWidth: 0, maxWidth: size.width);
-
-    final gradient = LinearGradient(
-      colors: [
-        const Color.fromARGB(255, 110, 110, 110),
-        Colors.black,
-        Colors.black,
-        Colors.black,
-        const Color.fromARGB(255, 110, 110, 110),
-      ],
-    );
-    final gradient2 = LinearGradient(
-      colors: [
-        const Color.fromARGB(255, 0, 191, 255),
-        const Color.fromARGB(255, 0, 20, 198),
-      ],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    );
-    final midPoint = Offset(size.width * .5, size.height * .5);
-    final midPoint2 = Offset(size.width * .5, size.height * .48);
+    canvas.drawPath(path, paintStick);
 
     final circlePaint =
         Paint()
-          ..color = const Color.fromARGB(255, 161, 155, 155)
-          ..strokeWidth = 3
-          ..style = PaintingStyle.stroke;
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
     final circlePaint2 =
         Paint()
-          ..shader = gradient.createShader(
-            Rect.fromCircle(center: midPoint, radius: 95),
-          )
-          ..strokeWidth = 1
+          ..color = Colors.black
           ..style = PaintingStyle.fill;
-    final circlePaint3 =
-        Paint()
-          ..shader = gradient2.createShader(
-            Rect.fromCircle(center: midPoint, radius: 85),
-          )
-          ..color = Colors.white
-          ..strokeWidth = 4
-          ..style = PaintingStyle.stroke;
-    final circlePaint4 =
-        Paint()
-          ..color = const Color.fromARGB(255, 0, 0, 0)
-          ..strokeWidth = 2
-          ..style = PaintingStyle.fill;
-    var paintStick =
-        Paint()
-          ..color = const Color.fromARGB(255, 128, 128, 128)
-          ..style = PaintingStyle.fill
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 2;
-    var paintStick2 =
-        Paint()
-          ..color = const Color.fromARGB(3, 255, 255, 255)
-          // ..color = const Color.fromARGB(242, 221, 8, 8)
-          ..style = PaintingStyle.fill
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 2;
 
-    var paintStick3 =
-        Paint()
-          ..color = const Color.fromARGB(8, 255, 255, 255)
-          // ..color = const Color.fromARGB(237, 244, 8, 8)
-          ..style = PaintingStyle.fill
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 2;
-    var paintStick4 =
-        Paint()
-          ..color = const Color.fromARGB(255, 6, 168, 255)
-          ..style = PaintingStyle.fill
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 2;
-    final shadowPaint =
-        Paint()
-          ..color = const Color.fromARGB(255, 0, 149, 255)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, size.width*.06);
-    final shadowPaint2 =
-        Paint()
-          ..color = const Color.fromARGB(255, 5, 188, 255)
-          ..maskFilter = MaskFilter.blur(BlurStyle.normal, size.width*.05);
+    canvas.drawCircle(midPoint, 6.0, circlePaint);
+    canvas.drawCircle(midPoint, 3.0, circlePaint2);
 
-    final circlePaint5 =
-        Paint()
-          ..color = const Color.fromARGB(255, 0, 187, 255)
-          ..strokeWidth = 2
-          ..style = PaintingStyle.fill;
-    final circlePaint7 =
-        Paint()
-          ..color = const Color.fromARGB(255, 0, 0, 0)
-          ..strokeWidth = 2
-          ..style = PaintingStyle.fill;
-    final circlePaint6 =
-        Paint()
-          ..color = const Color.fromARGB(255, 128, 128, 128)
-          ..strokeWidth = 2
-          ..style = PaintingStyle.fill;
-     final circlePaint8 =
-        Paint()
-          ..color = const Color.fromARGB(108, 0, 0, 0)
-          ..strokeWidth = 2
-          ..style = PaintingStyle.fill;
-    final circlePaint9 =
-        Paint()
-          ..color = const Color.fromARGB(155, 5, 188, 255)
-          ..strokeWidth = 2
-          ..style = PaintingStyle.stroke;
-
-    canvas.drawCircle(midPoint, size.width*.5, circlePaint);
-    // canvas.drawCircle(midPoint, size.width*.5, circlePaint2);
-    canvas.drawCircle(midPoint, size.width*.47, circlePaint3);
-    canvas.drawCircle(midPoint, size.width*.46, circlePaint4);
-
-    for (int i = 240; i < 520; i += 4) {
-      double x4 = centerX - (outerRadius2 ) * cos(i * pi / 260);
-      double y4 = centerY - (outerRadius2 ) * sin(i * pi / 260);
-      double x3 = centerX - innerRadius * cos(i * pi / 260);
-      double y3 = centerY - innerRadius * sin(i * pi / 260);
-      double x5 = centerX - (outerRadius+10) * cos(i * pi / 260);
-      double y5 = centerY - (outerRadius+10) * sin(i * pi / 260);
-      double x6 = centerX - innerRadius * cos(i * pi / 260);
-      double y6 = centerY - innerRadius * sin(i * pi / 260);
-      double x7 = centerX - innerRadius2 * cos(i * pi / 260);
-      double y7 = centerY - innerRadius2 * sin(i * pi / 260);
-      double x9 = centerX - (outerRadius) * cos(i * pi / 260);
-      double y9 = centerY - (outerRadius) * sin(i * pi / 260);
-      if (i < 310 || i > 470) {
-        canvas.drawLine(Offset(x4, y4), Offset(x3, y3), paintStick2);
-      }
-      canvas.drawLine(Offset(x5, y5), Offset(x6, y6), paintStick3);
-      if (i > 380 && i < 460) {
-        canvas.drawLine(Offset(x9, y9), Offset(x7, y7), paintStick4);
-      }
-    }
-    for (int i = 0; i < 240; i += 2) {
-      double x1 = centerX - outerRadius * cos(i * pi / 200);
-      double y1 = centerY - outerRadius * sin(i * pi / 200);
-      double x4 = centerX - outerRadius2 * cos(i * pi / 260);
-      double y4 = centerY - outerRadius2 * sin(i * pi / 260);
-      double x2 = centerX - outerRadius * cos(i * pi / 200);
-      double y2 = centerY - outerRadius * -sin(i * pi / 200);
-      double x3 = centerX - innerRadius * cos(i * pi / 260);
-      double y3 = centerY - innerRadius * sin(i * pi / 260);
-      double x5 = centerX - (outerRadius+10) * cos(i * pi / 260);
-      double y5 = centerY - (outerRadius+10) * sin(i * pi / 260);
-    
-      if (i % 4 == 0) {
-        canvas.drawLine(Offset(x4, y4), Offset(x3, y3), paintStick2);
-        canvas.drawLine(Offset(x5, y5), Offset(x3, y3), paintStick3);
-      }
-
-      if (i % 10 == 0 && i <= 240) {
-        if (i % 40 == 0) {
-          canvas.drawCircle(Offset(x1, y1), size.width*.03, shadowPaint2);
-          canvas.drawCircle(Offset(x1, y1), size.width*.015, circlePaint5);
-        } else {
-          canvas.drawCircle(Offset(x1, y1), size.width*.006, circlePaint5);
-        }
-
-        i <= 30 && i != 0
-            ? canvas.drawCircle(Offset(x2, y2),  size.width*.006, circlePaint5)
-            : Null;
-      }
-    }
-
-    canvas.drawCircle(midPoint2, size.width*.25, shadowPaint);
-    canvas.drawCircle(midPoint, size.width*.26, circlePaint7);
-
-    final path = Path();
-    path.moveTo(size.width * .495, size.height * .5);
-    path.lineTo(size.width * .495, size.height * .25);
-    path.lineTo(size.width * .51, size.height * .25);
-    path.lineTo(size.width * .51, size.height * .5);
-    path.lineTo(size.width * .495, size.height * .5);
-
-    canvas.drawPath(path, paintStick);
-    canvas.drawCircle(midPoint, size.width*.04, circlePaint6);
-    canvas.drawCircle(midPoint, size.width*.26, circlePaint8);
-    canvas.drawCircle(midPoint, size.width*.26, circlePaint9);
-    textPainter.paint(canvas, Offset(midPoint.dx-size.width*.11 , midPoint.dy - size.width*.13));
-    textPainter2.paint(canvas, Offset(midPoint.dx - size.width*.039, midPoint.dy + size.width*.09));
+    canvas.restore();
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class CustomDial3 extends CustomPainter {
+  double rotate;
+  CustomDial3({required this.rotate});
+  @override
+  void paint(Canvas canvas, Size size) {
+    final midPoint = Offset(size.width * .23, size.height * .5);
+    var paintStick =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = 5;
+
+    canvas.save();
+
+    canvas.translate(midPoint.dx, midPoint.dy);
+
+    double angle = rotate * 168 * (3.14159 / 180);
+
+    canvas.rotate(angle);
+    canvas.translate(-midPoint.dx, -midPoint.dy);
+
+    final path = Path();
+    path.moveTo(size.width * .21, size.height * .6);
+    path.lineTo(size.width * .35, size.height * .25);
+    path.lineTo(size.width * .17, size.height * .596);
+    // path.lineTo(size.width*.935, size.height*.6);
+    // path.lineTo(size.width*.95, size.height*.4);
+
+    canvas.drawPath(path, paintStick);
+
+    final circlePaint =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill;
+    final circlePaint2 =
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(midPoint, 6.0, circlePaint);
+    canvas.drawCircle(midPoint, 3.0, circlePaint2);
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
 
@@ -727,7 +832,7 @@ class CustomPaintDial extends CustomPainter {
 
     final textstyle = TextStyle(
       color: const Color.fromARGB(186, 255, 255, 255),
-      fontSize: size.height*.04,
+      fontSize: size.height * .04,
       fontWeight: FontWeight.bold,
       fontStyle: FontStyle.italic,
     );
@@ -749,10 +854,10 @@ class CustomPaintDial extends CustomPainter {
     var center = Offset(centerX, centerY);
     var radius = size.height * .44;
 
-    var outerRadius = radius - size.height*.03;
-    var innerRadius = radius -  size.height*.06;
-    var innerRadius2 = radius - size.height*.13;
-    var innerRadius3 = radius - size.height*.13;
+    var outerRadius = radius - size.height * .03;
+    var innerRadius = radius - size.height * .06;
+    var innerRadius2 = radius - size.height * .13;
+    var innerRadius3 = radius - size.height * .13;
 
     var hourDashPaint =
         Paint()
@@ -770,32 +875,32 @@ class CustomPaintDial extends CustomPainter {
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.01;
+          ..strokeWidth = size.height * .01;
     var paint3 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.015;
+          ..strokeWidth = size.height * .015;
     var paint4 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.02;
+          ..strokeWidth = size.height * .02;
     var paint5 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.025;
+          ..strokeWidth = size.height * .025;
     var paint6 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.03;
+          ..strokeWidth = size.height * .03;
     var paint7 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.035;
+          ..strokeWidth = size.height * .035;
     // var paint8 = Paint()
     // ..color =  const Color.fromARGB(255, 90, 90, 90)
     // ..style = PaintingStyle.stroke
@@ -913,10 +1018,12 @@ class CustomPaintDial extends CustomPainter {
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
     for (int i = 0; i < 70; i += 20) {
-      double x1 = centerX - innerRadius3 * cos(i * pi / 140)- size.width*.07;
-      double y1 = centerY - innerRadius3 * sin(i * pi / 140) - size.height*.02;
-      double x2 = centerX - innerRadius2 * cos(i * pi / 140) -size.width*.07;
-      double y2 = centerY - innerRadius2 * -sin(i * pi / 140) - size.height*.02;
+      double x1 = centerX - innerRadius3 * cos(i * pi / 140) - size.width * .07;
+      double y1 =
+          centerY - innerRadius3 * sin(i * pi / 140) - size.height * .02;
+      double x2 = centerX - innerRadius2 * cos(i * pi / 140) - size.width * .07;
+      double y2 =
+          centerY - innerRadius2 * -sin(i * pi / 140) - size.height * .02;
 
       textPainter.paint(canvas, Offset(x2, y2));
       i == 0 ? Null : textPainter.paint(canvas, Offset(x1, y1));
@@ -930,39 +1037,39 @@ class CustomPaintDial extends CustomPainter {
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
 
-    final midPoint = Offset(size.width * .77, size.height * .5);
+    // final midPoint = Offset(size.width * .77, size.height * .5);
 
-    canvas.save();
+    // canvas.save();
 
-    canvas.translate(midPoint.dx, midPoint.dy);
+    // canvas.translate(midPoint.dx, midPoint.dy);
 
-    double angle = 192 * (3.14159 / 180);
+    // double angle = 192 * (3.14159 / 180);
 
-    canvas.rotate(angle);
-    canvas.translate(-midPoint.dx, -midPoint.dy);
+    // canvas.rotate(angle);
+    // canvas.translate(-midPoint.dx, -midPoint.dy);
 
-    final path = Path();
-    path.moveTo(size.width * .79, size.height * .6);
-    path.lineTo(size.width * .65, size.height * .25);
-    path.lineTo(size.width * .83, size.height * .595);
-    // path.lineTo(size.width*.935, size.height*.6);
-    // path.lineTo(size.width*.95, size.height*.4);
+    // final path = Path();
+    // path.moveTo(size.width * .79, size.height * .6);
+    // path.lineTo(size.width * .65, size.height * .25);
+    // path.lineTo(size.width * .83, size.height * .595);
+    // // path.lineTo(size.width*.935, size.height*.6);
+    // // path.lineTo(size.width*.95, size.height*.4);
 
-    canvas.drawPath(path, paintStick);
+    // canvas.drawPath(path, paintStick);
 
-    final circlePaint =
-        Paint()
-          ..color = Colors.white
-          ..style = PaintingStyle.fill;
-    final circlePaint2 =
-        Paint()
-          ..color = Colors.black
-          ..style = PaintingStyle.fill;
+    // final circlePaint =
+    //     Paint()
+    //       ..color = Colors.white
+    //       ..style = PaintingStyle.fill;
+    // final circlePaint2 =
+    //     Paint()
+    //       ..color = Colors.black
+    //       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(midPoint, 6.0, circlePaint);
-    canvas.drawCircle(midPoint, 3.0, circlePaint2);
+    // canvas.drawCircle(midPoint, 6.0, circlePaint);
+    // canvas.drawCircle(midPoint, 3.0, circlePaint2);
 
-    canvas.restore();
+    // canvas.restore();
   }
 
   @override
@@ -983,7 +1090,7 @@ class CustomPaintDial2 extends CustomPainter {
 
     final textstyle = TextStyle(
       color: const Color.fromARGB(186, 255, 255, 255),
-      fontSize: size.height*.04,
+      fontSize: size.height * .04,
       fontWeight: FontWeight.bold,
       fontStyle: FontStyle.italic,
     );
@@ -1013,32 +1120,32 @@ class CustomPaintDial2 extends CustomPainter {
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.01;
+          ..strokeWidth = size.height * .01;
     var paint3 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.015;
+          ..strokeWidth = size.height * .015;
     var paint4 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.02;
+          ..strokeWidth = size.height * .02;
     var paint5 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.025;
+          ..strokeWidth = size.height * .025;
     var paint6 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.03;
+          ..strokeWidth = size.height * .03;
     var paint7 =
         Paint()
           ..color = const Color.fromARGB(255, 90, 90, 90)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = size.height*.035;
+          ..strokeWidth = size.height * .035;
 
     var centerX = size.width * .07;
     var centerX2 = size.width * .82;
@@ -1048,10 +1155,10 @@ class CustomPaintDial2 extends CustomPainter {
     var center = Offset(centerX, centerY);
     var radius = size.height * .44;
 
-    var outerRadius = radius - size.height*.03;
-    var innerRadius = radius - size.height*.06;
-    var innerRadius2 = radius - size.height*.13;
-    var innerRadius3 = radius - size.height*.13;
+    var outerRadius = radius - size.height * .03;
+    var innerRadius = radius - size.height * .06;
+    var innerRadius2 = radius - size.height * .13;
+    var innerRadius3 = radius - size.height * .13;
 
     canvas.drawArc(
       Rect.fromPoints(
@@ -1133,10 +1240,14 @@ class CustomPaintDial2 extends CustomPainter {
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
     for (int i = 0; i < 70; i += 20) {
-      double x1 = centerX - innerRadius3 * -cos(i * pi / 140) - size.width*.07;
-      double y1 = centerY - innerRadius3 * sin(i * pi / 140) - size.height*.02;
-      double x2 = centerX - innerRadius2 * -cos(i * pi / 140) - size.width*.07;
-      double y2 = centerY - innerRadius2 * -sin(i * pi / 140) - size.height*.02;
+      double x1 =
+          centerX - innerRadius3 * -cos(i * pi / 140) - size.width * .07;
+      double y1 =
+          centerY - innerRadius3 * sin(i * pi / 140) - size.height * .02;
+      double x2 =
+          centerX - innerRadius2 * -cos(i * pi / 140) - size.width * .07;
+      double y2 =
+          centerY - innerRadius2 * -sin(i * pi / 140) - size.height * .02;
 
       textPainter.paint(canvas, Offset(x2, y2));
       i == 0 ? Null : textPainter.paint(canvas, Offset(x1, y1));
@@ -1150,39 +1261,39 @@ class CustomPaintDial2 extends CustomPainter {
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
 
-    final midPoint = Offset(size.width * .23, size.height * .5);
+    // final midPoint = Offset(size.width * .23, size.height * .5);
 
-    canvas.save();
+    // canvas.save();
 
-    canvas.translate(midPoint.dx, midPoint.dy);
+    // canvas.translate(midPoint.dx, midPoint.dy);
 
-    double angle = 168 * (3.14159 / 180);
+    // double angle = 168 * (3.14159 / 180);
 
-    canvas.rotate(angle);
-    canvas.translate(-midPoint.dx, -midPoint.dy);
+    // canvas.rotate(angle);
+    // canvas.translate(-midPoint.dx, -midPoint.dy);
 
-    final path = Path();
-    path.moveTo(size.width * .21, size.height * .6);
-    path.lineTo(size.width * .35, size.height * .25);
-    path.lineTo(size.width * .17, size.height * .596);
-    // path.lineTo(size.width*.935, size.height*.6);
-    // path.lineTo(size.width*.95, size.height*.4);
+    // final path = Path();
+    // path.moveTo(size.width * .21, size.height * .6);
+    // path.lineTo(size.width * .35, size.height * .25);
+    // path.lineTo(size.width * .17, size.height * .596);
+    // // path.lineTo(size.width*.935, size.height*.6);
+    // // path.lineTo(size.width*.95, size.height*.4);
 
-    canvas.drawPath(path, paintStick);
+    // canvas.drawPath(path, paintStick);
 
-    final circlePaint =
-        Paint()
-          ..color = Colors.white
-          ..style = PaintingStyle.fill;
-    final circlePaint2 =
-        Paint()
-          ..color = Colors.black
-          ..style = PaintingStyle.fill;
+    // final circlePaint =
+    //     Paint()
+    //       ..color = Colors.white
+    //       ..style = PaintingStyle.fill;
+    // final circlePaint2 =
+    //     Paint()
+    //       ..color = Colors.black
+    //       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(midPoint, 6.0, circlePaint);
-    canvas.drawCircle(midPoint, 3.0, circlePaint2);
+    // canvas.drawCircle(midPoint, 6.0, circlePaint);
+    // canvas.drawCircle(midPoint, 3.0, circlePaint2);
 
-    canvas.restore();
+    // canvas.restore();
   }
 
   @override

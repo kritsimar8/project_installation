@@ -45,20 +45,9 @@ class CustomPainter10 extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2;
 
-    var paintStick =
-        Paint()
-          ..color = Colors.white
-          ..style = PaintingStyle.fill
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 5;
+   
 
-    final startPoint = Offset(size.width * .5, size.height * .3);
-    final tipPoint = Offset(size.width * .5, size.height * .8);
-
-    final midPoint = Offset(
-      (startPoint.dx + tipPoint.dx) / 2,
-      (startPoint.dy + tipPoint.dy) / 2 * .85,
-    );
+    
 
     canvas.drawLine(
       Offset(size.width * .2, size.height * .95),
@@ -111,12 +100,42 @@ class CustomPainter10 extends CustomPainter {
       paint,
     );
 
-    canvas.save();
+  
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
+class CustomGasInd extends CustomPainter{
+  double rotate; 
+  CustomGasInd({required this.rotate});
+  @override 
+  void paint(Canvas canvas, Size size) {
+     var paintStick =
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.fill
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = 5;
+
+    final startPoint = Offset(size.width * .5, size.height * .3);
+    final tipPoint = Offset(size.width * .5, size.height * .8);
+
+    final midPoint = Offset(
+      (startPoint.dx + tipPoint.dx) / 2,
+      (startPoint.dy + tipPoint.dy) / 2 * .85,
+    );
+
+
+      canvas.save();
 
     // canvas.translate(50,-30);
     canvas.translate(midPoint.dx * .99, midPoint.dy * .99);
 
-    double angle = 0 * (3.14159 / 180);
+    double angle = rotate * (3.14159 / 180);
 
     canvas.rotate(angle);
     canvas.translate(-midPoint.dx * .99, -midPoint.dy * .99);
@@ -145,6 +164,7 @@ class CustomPainter10 extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
     return true;
   }
 }

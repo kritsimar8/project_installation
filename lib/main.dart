@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:installation_project/ButtonPage.dart';
 import 'package:installation_project/HomePage_main.dart';
-import 'package:installation_project/homePage.dart';
-import 'package:installation_project/second_page.dart';
-import 'package:installation_project/test.dart';
-import 'package:installation_project/test2.dart';
-import 'package:installation_project/test3.dart';
-import 'package:installation_project/test4.dart';
-import 'package:installation_project/test5.dart';
 
 void main()  async{
   WidgetsFlutterBinding.ensureInitialized();

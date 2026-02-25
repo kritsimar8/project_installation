@@ -94,7 +94,7 @@ class _SecondPageState extends State<SecondPage> {
               ],
             ),
           ),
-          SizedBox(height: MyHeight*.03,),
+          SizedBox(height: MyHeight*.02,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -146,6 +146,12 @@ class _SecondPageState extends State<SecondPage> {
 class CustomPaintInTemp2 extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+
+    DateTime time = DateTime.now();
+
+    String myTime = '${time.hour}: ${time.minute}';
+
+
     final List<List<double>> item = [
       [0.0,0.45,0],
       [-0.225,.39,.55],
@@ -197,6 +203,11 @@ class CustomPaintInTemp2 extends CustomPainter {
       fontSize: size.width*.07,
       fontFamily: 'Text',
     );
+    final textStyle6 = TextStyle(
+      color: const Color.fromARGB(255, 102, 52, 34),
+      fontSize: size.width*.06,
+      fontFamily: 'Text',
+    );
 
     final textSpan = TextSpan(text: '0', style: textStyle);
     final textSpan2 = TextSpan(text: '2', style: textStyle);
@@ -216,6 +227,8 @@ class CustomPaintInTemp2 extends CustomPainter {
     final textSpan16 = TextSpan(text: '12', style: textStyle2);
     final textSpan17 = TextSpan(text: '~10°', style: textStyle4);
     final textSpan18 = TextSpan(text: 'Cel', style: textStyle5);
+    final textSpan19 = TextSpan(text: myTime, style: textStyle6);
+    final textSpan20 = TextSpan(text: 'Temperature', style: textStyle6);
     final textPainter = TextPainter(
       text: textSpan,
       textDirection: TextDirection.ltr,
@@ -289,6 +302,14 @@ class CustomPaintInTemp2 extends CustomPainter {
       text: textSpan18,
       textDirection: TextDirection.ltr,
     );
+    final textPainter19 = TextPainter(
+      text: textSpan19,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter20 = TextPainter(
+      text: textSpan20,
+      textDirection: TextDirection.ltr,
+    );
     textPainter.layout(minWidth: 0, maxWidth: size.width);
     textPainter1.layout(minWidth: 0, maxWidth: size.width);
     textPainter2.layout(minWidth: 0, maxWidth: size.width);
@@ -308,6 +329,8 @@ class CustomPaintInTemp2 extends CustomPainter {
     textPainter16.layout(minWidth: 0, maxWidth: size.width);
     textPainter17.layout(minWidth: 0, maxWidth: size.width);
     textPainter18.layout(minWidth: 0, maxWidth: size.width);
+    textPainter19.layout(minWidth: 0, maxWidth: size.width);
+    textPainter20.layout(minWidth: 0, maxWidth: size.width);
 
     final List<TextPainter> painter = [
       textPainter,
@@ -405,6 +428,8 @@ class CustomPaintInTemp2 extends CustomPainter {
       textPainter16.paint(canvas, Offset(size.width * .45, size.height * .71));
       textPainter17.paint(canvas, Offset(size.width * .33, size.height * .4));
       textPainter18.paint(canvas, Offset(size.width * .44, size.height * .55));
+      textPainter19.paint(canvas, Offset(size.width * .8, size.height * .0));
+      textPainter20.paint(canvas, Offset(size.width * .05, size.height * .00));
   }
 
   @override
@@ -858,8 +883,8 @@ class CustomCFM2 extends CustomPainter {
     double outerRadius2 = size.width * .45;
     double innerRadius = size.width * .22;
     final rect =  Rect.fromPoints(
-        Offset(size.width * .06, size.height * .16),
-        Offset(size.width * .94, size.height * .84),
+        Offset(size.width * .06, size.height * .18),
+        Offset(size.width * .94, size.height * .82),
       );
     
     const LinearGradient gradient = LinearGradient(
