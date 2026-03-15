@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:installation_project/ButtonPage.dart';
 import 'package:installation_project/homePage.dart';
 import 'package:installation_project/second_page.dart';
 
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomepageMain> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-     index ==1? HomePage():  SecondPage(),
+     index ==1? HomePage(): index==2? SecondPage(): ButtonPage(),
           Column(
             children: [
               Spacer(),

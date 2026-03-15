@@ -296,6 +296,11 @@ class Stick extends CustomPainter {
 }
 
 class Readings extends CustomPainter{
+
+  final String read;
+  Readings({required this.read});
+
+
   @override 
   void paint(Canvas canvas , Size size){
        final textstyle = TextStyle(
@@ -315,8 +320,8 @@ class Readings extends CustomPainter{
       // fontStyle: FontStyle.italic
     );
 
-    final textSpan = TextSpan(text: '10', style: textstyle);
-    final textSpan2 = TextSpan(text: 'Amp', style: textstyle2);
+    final textSpan = TextSpan(text: '00', style: textstyle);
+    final textSpan2 = TextSpan(text: read, style: textstyle2);
 
     final textPainter = TextPainter(
       text: textSpan,
@@ -344,7 +349,7 @@ class Readings extends CustomPainter{
     canvas.drawCircle(midPoint, size.width * .26, circlePaint9);
     textPainter.paint(
       canvas,
-      Offset(midPoint.dx - size.width * .11, midPoint.dy - size.width * .13),
+      Offset(midPoint.dx - size.width * .1, midPoint.dy - size.width * .13),
     );
     textPainter2.paint(
       canvas,

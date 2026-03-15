@@ -2,6 +2,7 @@ import 'dart:math';
 // import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
 
 import 'package:flutter/material.dart';
+import 'package:installation_project/second_page.dart';
 
 class Test extends StatefulWidget {
   const Test({super.key});
@@ -19,18 +20,117 @@ class _TestState extends State<Test> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Container(
-        padding: EdgeInsets.only(top: 0),
-        color: const Color.fromARGB(34, 255, 255, 255),
-        height: 500,
-        width: 500,
-        child: CustomPaint(
-          painter: CustomPainter1(),
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.only(top: 0),
+          color: const Color.fromARGB(34, 255, 255, 255),
+          height: 100,
+          width: 500,
+          child: CustomPaint(
+            painter: CustomPainterBar(),
+          ),
         ),
       ),
     );
   }
 }
+
+
+class CustomPainterBar extends CustomPainter {
+  @override 
+  void paint(Canvas canvas, Size size){
+    var midPoint = Offset(size.width*.5,size.height*.5);
+
+    final circlePaint = Paint()
+    ..color = const Color.fromARGB(255, 25, 230, 32)
+    ..style = PaintingStyle.fill;
+
+    for (double i=.10; i<= .9; i+=.02){
+       canvas.drawCircle(Offset(size.width*i,size.height*.5), 2, circlePaint);
+        canvas.drawCircle(Offset(size.width*i,size.height*.34), 2, circlePaint);
+         canvas.drawCircle(Offset(size.width*i,size.height*.42), 2, circlePaint);
+           canvas.drawCircle(Offset(size.width*i,size.height*.58), 2, circlePaint);
+            canvas.drawCircle(Offset(size.width*i,size.height*.66), 2, circlePaint);
+    }
+
+
+    // canvas.drawCircle(Offset(size.width*.5,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.48,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.46,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.44,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.42,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.4,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.38,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.36,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.34,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.32,size.height*.5), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.3,size.height*.5), 2, circlePaint);
+
+
+
+    // canvas.drawCircle(Offset(size.width*.5,size.height*.34), 2, circlePaint);
+    //     canvas.drawCircle(Offset(size.width*.48,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.46,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.44,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.42,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.4,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.38,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.36,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.34,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.32,size.height*.34), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.3,size.height*.34), 2, circlePaint);
+
+    
+    // canvas.drawCircle(Offset(size.width*.5,size.height*.42), 2, circlePaint);
+    //  canvas.drawCircle(Offset(size.width*.48,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.46,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.44,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.42,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.4,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.38,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.36,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.34,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.32,size.height*.42), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.3,size.height*.42), 2, circlePaint);
+
+    //  canvas.drawCircle(Offset(size.width*.5,size.height*.58), 2, circlePaint);
+    //      canvas.drawCircle(Offset(size.width*.5,size.height*.58), 2, circlePaint);
+    //  canvas.drawCircle(Offset(size.width*.48,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.46,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.44,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.42,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.4,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.38,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.36,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.34,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.32,size.height*.58), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.3,size.height*.58), 2, circlePaint);
+
+    // canvas.drawCircle(Offset(size.width*.3,size.height*.66), 2, circlePaint);
+    //      canvas.drawCircle(Offset(size.width*.5,size.height*.66), 2, circlePaint);
+    //      canvas.drawCircle(Offset(size.width*.5,size.height*.66), 2, circlePaint);
+    //  canvas.drawCircle(Offset(size.width*.48,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.46,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.44,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.42,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.4,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.38,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.36,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.34,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.32,size.height*.66), 2, circlePaint);
+    // canvas.drawCircle(Offset(size.width*.3,size.height*.66), 2, circlePaint);
+  }
+
+  @override 
+  bool shouldRepaint(covariant CustomPainter oldDelegate){
+    return false; 
+  }
+}
+
+
+
+
+
 
 
 class CustomPainter1 extends CustomPainter {

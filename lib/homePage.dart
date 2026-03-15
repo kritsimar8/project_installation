@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:installation_project/Gauges.dart';
+import 'package:installation_project/state.dart';
 import 'package:installation_project/test2.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,14 +15,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _controller;
  
-
-  late final Animation<double> _animation = Tween<double>(
-    begin: 1,
-    end: 1.95,
-  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+ 
+ 
   late final Animation<double> _animation2 = Tween<double>(
     begin: 1,
     end: -.1,
@@ -36,22 +34,37 @@ class _HomePageState extends State<HomePage>
   ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOutQuad));
 
 
+  Animation<double> rotation(){
+     late final Animation<double> _animation = Tween<double>(
+    begin: 1,
+    end: 1.95,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
 
-  @override
-  void initState() {
-    // TODO: implement initState
-
-    _controller = AnimationController(
-      duration: Duration(milliseconds: 1500),
-      vsync: this,
-    )..forward();
+  return _animation;
+  }
+  
+  void Animate(){
+     _controller.forward();
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _controller.reverse();
       }
     });
+    state.statechange();
+    
+  }
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+  _controller = AnimationController(
+      duration: Duration(milliseconds: 1500),
+      vsync: this,
+    );
+   
+ 
     super.initState();
   }
 
@@ -69,25 +82,21 @@ class _HomePageState extends State<HomePage>
       await Future.delayed(Duration(seconds: 1));
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {
-    // width = 508 height = 1130 high
-    // width = 320 height = 711
-    print(_animation.value);
+    
+    // print(_animation.value);
 
     double FontSize = MediaQuery.textScalerOf(context).scale(1);
 
-    // print(FontSize);
+    
     final MyHeight = MediaQuery.of(context).size.height;
     final MyWidth = MediaQuery.of(context).size.width;
 
-    // print('This is my Height' + MyHeight.toString());
-    // print('This is my width' + MyWidth.toString());
-
-    // final MyHeight = 875;
-    // final MyWidth = 411;
-
+  state.inState==false ? Animate() : Null;
+  
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 0, 0, 0),
 
@@ -191,7 +200,7 @@ class _HomePageState extends State<HomePage>
                                     builder: (context, child) {
                                       return CustomPaint(
                                         painter: CustomDial2(
-                                          rotate: _animation.value,
+                                          rotate: rotation().value,
                                         ),
                                       );
                                     },
@@ -514,7 +523,7 @@ class _HomePageState extends State<HomePage>
                                 ),
                                 Spacer(),
                                 Text(
-                                  'S.TEMP || WEIGHT',
+                                  'S.TEMP || AMPERE',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.robotoMono(
@@ -605,7 +614,7 @@ class _HomePageState extends State<HomePage>
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings()),
+                      child: CustomPaint(painter: Readings(read: 'PSI')),
                     ),
                   ],
                 ),
@@ -636,7 +645,7 @@ class _HomePageState extends State<HomePage>
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings()),
+                      child: CustomPaint(painter: Readings(read: 'PSI')),
                     ),
                   ],
                 ),
@@ -672,7 +681,7 @@ class _HomePageState extends State<HomePage>
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings()),
+                      child: CustomPaint(painter: Readings(read: 'Cel')),
                     ),
                   ],
                 ),
@@ -703,7 +712,7 @@ class _HomePageState extends State<HomePage>
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings()),
+                      child: CustomPaint(painter: Readings(read: 'Cel')),
                     ),
                   ],
                 ),
@@ -823,6 +832,7 @@ class CustomDial3 extends CustomPainter {
 class CustomPaintDial extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    List<TextPainter> myList = [];
     var paint =
         Paint()
           ..color = Colors.white
@@ -837,14 +847,54 @@ class CustomPaintDial extends CustomPainter {
       fontStyle: FontStyle.italic,
     );
 
-    final textSpan = TextSpan(text: '10', style: textstyle);
+    final textSpan = TextSpan(text: '24', style: textstyle);
+    final textSpan2 = TextSpan(text: '20', style: textstyle);
+    final textSpan3 = TextSpan(text: '16', style: textstyle);
+    final textSpan4 = TextSpan(text: '12', style: textstyle);
+    final textSpan5 = TextSpan(text: '8', style: textstyle);
+    final textSpan6 = TextSpan(text: '4', style: textstyle);
+    final textSpan7 = TextSpan(text: '0', style: textstyle);
 
     final textPainter = TextPainter(
       text: textSpan,
       textDirection: TextDirection.ltr,
     );
+    final textPainter2 = TextPainter(
+      text: textSpan2,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter3 = TextPainter(
+      text: textSpan3,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter4 = TextPainter(
+      text: textSpan4,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter5 = TextPainter(
+      text: textSpan5,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter6 = TextPainter(
+      text: textSpan6,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter7 = TextPainter(
+      text: textSpan7,
+      textDirection: TextDirection.ltr,
+    );
 
     textPainter.layout(minWidth: 0, maxWidth: size.width);
+    textPainter2.layout(minWidth: 0, maxWidth: size.width);
+    textPainter3.layout(minWidth: 0, maxWidth: size.width);
+    textPainter4.layout(minWidth: 0, maxWidth: size.width);
+    textPainter5.layout(minWidth: 0, maxWidth: size.width);
+    textPainter6.layout(minWidth: 0, maxWidth: size.width);
+    textPainter7.layout(minWidth: 0, maxWidth: size.width);
+
+    myList.addAll([textPainter,textPainter2,textPainter3,textPainter4,textPainter5,textPainter6,textPainter7]);
+
+    
 
     var centerX = size.width * .93;
     var centerX2 = size.width * .82;
@@ -1017,16 +1067,21 @@ class CustomPaintDial extends CustomPainter {
 
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
+    int TempRange1 =3; 
+    int TempRange2 =3;
     for (int i = 0; i < 70; i += 20) {
+
       double x1 = centerX - innerRadius3 * cos(i * pi / 140) - size.width * .07;
       double y1 =
-          centerY - innerRadius3 * sin(i * pi / 140) - size.height * .02;
+      centerY - innerRadius3 * sin(i * pi / 140) - size.height * .02;
       double x2 = centerX - innerRadius2 * cos(i * pi / 140) - size.width * .07;
       double y2 =
           centerY - innerRadius2 * -sin(i * pi / 140) - size.height * .02;
-
-      textPainter.paint(canvas, Offset(x2, y2));
-      i == 0 ? Null : textPainter.paint(canvas, Offset(x1, y1));
+     
+      myList[TempRange1].paint(canvas, Offset(x2, y2));
+      i == 0 ? Null : myList[TempRange2].paint(canvas, Offset(x1, y1));
+      TempRange1++;
+     TempRange2==0?Null: TempRange2--;
     }
     for (int i = 0; i < 70; i += 20) {
       double x1 = centerX - outerRadius * cos(i * pi / 140);
@@ -1081,6 +1136,7 @@ class CustomPaintDial extends CustomPainter {
 class CustomPaintDial2 extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+     List<TextPainter> myList = [];
     var paint =
         Paint()
           ..color = Colors.white
@@ -1095,14 +1151,57 @@ class CustomPaintDial2 extends CustomPainter {
       fontStyle: FontStyle.italic,
     );
 
-    final textSpan = TextSpan(text: '10', style: textstyle);
-
+      final textSpan = TextSpan(text: '24', style: textstyle);
+    final textSpan2 = TextSpan(text: '20', style: textstyle);
+    final textSpan3 = TextSpan(text: '16', style: textstyle);
+    final textSpan4 = TextSpan(text: '12', style: textstyle);
+    final textSpan5 = TextSpan(text: '8', style: textstyle);
+    final textSpan6 = TextSpan(text: '4', style: textstyle);
+    final textSpan7 = TextSpan(text: '0', style: textstyle);
+  
     final textPainter = TextPainter(
       text: textSpan,
       textDirection: TextDirection.ltr,
     );
+    final textPainter2 = TextPainter(
+      text: textSpan2,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter3 = TextPainter(
+      text: textSpan3,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter4 = TextPainter(
+      text: textSpan4,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter5 = TextPainter(
+      text: textSpan5,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter6 = TextPainter(
+      text: textSpan6,
+      textDirection: TextDirection.ltr,
+    );
+    final textPainter7 = TextPainter(
+      text: textSpan7,
+      textDirection: TextDirection.ltr,
+    );
 
     textPainter.layout(minWidth: 0, maxWidth: size.width);
+    textPainter2.layout(minWidth: 0, maxWidth: size.width);
+    textPainter3.layout(minWidth: 0, maxWidth: size.width);
+    textPainter4.layout(minWidth: 0, maxWidth: size.width);
+    textPainter5.layout(minWidth: 0, maxWidth: size.width);
+    textPainter6.layout(minWidth: 0, maxWidth: size.width);
+    textPainter7.layout(minWidth: 0, maxWidth: size.width);
+
+     myList.addAll([textPainter,textPainter2,textPainter3,textPainter4,textPainter5,textPainter6,textPainter7]);
+
+
+ 
+
+   
 
     var hourDashPaint =
         Paint()
@@ -1239,6 +1338,9 @@ class CustomPaintDial2 extends CustomPainter {
 
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
+
+    int Range1 =3;
+    int Range2 =2;
     for (int i = 0; i < 70; i += 20) {
       double x1 =
           centerX - innerRadius3 * -cos(i * pi / 140) - size.width * .07;
@@ -1249,8 +1351,10 @@ class CustomPaintDial2 extends CustomPainter {
       double y2 =
           centerY - innerRadius2 * -sin(i * pi / 140) - size.height * .02;
 
-      textPainter.paint(canvas, Offset(x2, y2));
-      i == 0 ? Null : textPainter.paint(canvas, Offset(x1, y1));
+      myList[Range1].paint(canvas, Offset(x2, y2));
+      i == 0 ? Null : myList[Range2].paint(canvas, Offset(x1, y1));
+      Range1++;
+      i==0?Null:Range2--;
     }
     for (int i = 0; i < 70; i += 20) {
       double x1 = centerX - outerRadius * -cos(i * pi / 140);
