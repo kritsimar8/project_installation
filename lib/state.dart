@@ -5,6 +5,5 @@ class state {
 
   static void statechange(){
     inState = true;
-  }
-  
+  } 
 }

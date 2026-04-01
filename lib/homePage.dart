@@ -14,12 +14,9 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late final AnimationController _controller;
- 
- 
- 
+
   late final Animation<double> _animation2 = Tween<double>(
     begin: 1,
     end: -.1,
@@ -33,18 +30,21 @@ class _HomePageState extends State<HomePage>
     end: 120,
   ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOutQuad));
 
+  Animation<double> rotation() {
+    late final Animation<double> _animation = Tween<double>(
+      begin: 1,
+      end: 1.95,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
+    );
 
-  Animation<double> rotation(){
-     late final Animation<double> _animation = Tween<double>(
-    begin: 1,
-    end: 1.95,
-  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
-
-  return _animation;
+    return _animation;
   }
-  
-  void Animate(){
-     _controller.forward();
+
+  void Animate() {
+    _controller.duration = Duration(milliseconds: 600);
+    _controller.forward();
+    
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -52,51 +52,45 @@ class _HomePageState extends State<HomePage>
       }
     });
     state.statechange();
-    
   }
-
 
   @override
   void initState() {
     // TODO: implement initState
-  _controller = AnimationController(
-      duration: Duration(milliseconds: 1500),
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-   
- 
     super.initState();
   }
 
+  @override
   void dispose() {
     // TODO: implement dispose
     _controller.dispose();
-  
+
     super.dispose();
   }
 
   double i = 0;
-  Future<double?> increment() async {
-    for (i = 0; i < 100;) {
-      i += 1.0;
-      await Future.delayed(Duration(seconds: 1));
-    }
-  }
-  
+  // Future<double?> increment() async {
+  //   for (i = 0; i < 100;) {
+  //     i += 1.0;
+  //     await Future.delayed(Duration(seconds: 1));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    
     // print(_animation.value);
 
     double FontSize = MediaQuery.textScalerOf(context).scale(1);
 
-    
     final MyHeight = MediaQuery.of(context).size.height;
     final MyWidth = MediaQuery.of(context).size.width;
 
-  state.inState==false ? Animate() : Null;
-  
+    state.inState == false ? Animate() : Null;
+    // Animate();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 0, 0, 0),
 
@@ -582,7 +576,7 @@ class _HomePageState extends State<HomePage>
                   ),
                 ],
               ),
-            ),  
+            ),
           ),
           SizedBox(height: MyHeight * .02),
           Row(
@@ -602,13 +596,13 @@ class _HomePageState extends State<HomePage>
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child:AnimatedBuilder(
+                      child: AnimatedBuilder(
                         animation: _animation4,
-                        builder: (context,child) {
-                          return CustomPaint(painter: Stick(
-                            rotation: _animation4.value
-                          ));
-                        }
+                        builder: (context, child) {
+                          return CustomPaint(
+                            painter: Stick(rotation: _animation4.value),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(
@@ -633,13 +627,13 @@ class _HomePageState extends State<HomePage>
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child:AnimatedBuilder(
+                      child: AnimatedBuilder(
                         animation: _animation4,
-                        builder: (context,child) {
-                          return CustomPaint(painter: Stick(
-                            rotation: _animation4.value
-                          ));
-                        }
+                        builder: (context, child) {
+                          return CustomPaint(
+                            painter: Stick(rotation: _animation4.value),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(
@@ -669,13 +663,13 @@ class _HomePageState extends State<HomePage>
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child:AnimatedBuilder(
+                      child: AnimatedBuilder(
                         animation: _animation4,
-                        builder: (context,child) {
-                          return CustomPaint(painter: Stick(
-                            rotation: _animation4.value
-                          ));
-                        }
+                        builder: (context, child) {
+                          return CustomPaint(
+                            painter: Stick(rotation: _animation4.value),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(
@@ -702,11 +696,11 @@ class _HomePageState extends State<HomePage>
                       width: MyWidth * .48,
                       child: AnimatedBuilder(
                         animation: _animation4,
-                        builder: (context,child) {
-                          return CustomPaint(painter: Stick(
-                            rotation: _animation4.value
-                          ));
-                        }
+                        builder: (context, child) {
+                          return CustomPaint(
+                            painter: Stick(rotation: _animation4.value),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(
@@ -892,9 +886,15 @@ class CustomPaintDial extends CustomPainter {
     textPainter6.layout(minWidth: 0, maxWidth: size.width);
     textPainter7.layout(minWidth: 0, maxWidth: size.width);
 
-    myList.addAll([textPainter,textPainter2,textPainter3,textPainter4,textPainter5,textPainter6,textPainter7]);
-
-    
+    myList.addAll([
+      textPainter,
+      textPainter2,
+      textPainter3,
+      textPainter4,
+      textPainter5,
+      textPainter6,
+      textPainter7,
+    ]);
 
     var centerX = size.width * .93;
     var centerX2 = size.width * .82;
@@ -1067,21 +1067,20 @@ class CustomPaintDial extends CustomPainter {
 
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
-    int TempRange1 =3; 
-    int TempRange2 =3;
+    int TempRange1 = 3;
+    int TempRange2 = 3;
     for (int i = 0; i < 70; i += 20) {
-
       double x1 = centerX - innerRadius3 * cos(i * pi / 140) - size.width * .07;
       double y1 =
-      centerY - innerRadius3 * sin(i * pi / 140) - size.height * .02;
+          centerY - innerRadius3 * sin(i * pi / 140) - size.height * .02;
       double x2 = centerX - innerRadius2 * cos(i * pi / 140) - size.width * .07;
       double y2 =
           centerY - innerRadius2 * -sin(i * pi / 140) - size.height * .02;
-     
+
       myList[TempRange1].paint(canvas, Offset(x2, y2));
       i == 0 ? Null : myList[TempRange2].paint(canvas, Offset(x1, y1));
       TempRange1++;
-     TempRange2==0?Null: TempRange2--;
+      TempRange2 == 0 ? Null : TempRange2--;
     }
     for (int i = 0; i < 70; i += 20) {
       double x1 = centerX - outerRadius * cos(i * pi / 140);
@@ -1136,7 +1135,7 @@ class CustomPaintDial extends CustomPainter {
 class CustomPaintDial2 extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-     List<TextPainter> myList = [];
+    List<TextPainter> myList = [];
     var paint =
         Paint()
           ..color = Colors.white
@@ -1151,14 +1150,14 @@ class CustomPaintDial2 extends CustomPainter {
       fontStyle: FontStyle.italic,
     );
 
-      final textSpan = TextSpan(text: '24', style: textstyle);
+    final textSpan = TextSpan(text: '24', style: textstyle);
     final textSpan2 = TextSpan(text: '20', style: textstyle);
     final textSpan3 = TextSpan(text: '16', style: textstyle);
     final textSpan4 = TextSpan(text: '12', style: textstyle);
     final textSpan5 = TextSpan(text: '8', style: textstyle);
     final textSpan6 = TextSpan(text: '4', style: textstyle);
     final textSpan7 = TextSpan(text: '0', style: textstyle);
-  
+
     final textPainter = TextPainter(
       text: textSpan,
       textDirection: TextDirection.ltr,
@@ -1196,12 +1195,15 @@ class CustomPaintDial2 extends CustomPainter {
     textPainter6.layout(minWidth: 0, maxWidth: size.width);
     textPainter7.layout(minWidth: 0, maxWidth: size.width);
 
-     myList.addAll([textPainter,textPainter2,textPainter3,textPainter4,textPainter5,textPainter6,textPainter7]);
-
-
- 
-
-   
+    myList.addAll([
+      textPainter,
+      textPainter2,
+      textPainter3,
+      textPainter4,
+      textPainter5,
+      textPainter6,
+      textPainter7,
+    ]);
 
     var hourDashPaint =
         Paint()
@@ -1339,8 +1341,8 @@ class CustomPaintDial2 extends CustomPainter {
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), hourDashPaint);
     }
 
-    int Range1 =3;
-    int Range2 =2;
+    int Range1 = 3;
+    int Range2 = 2;
     for (int i = 0; i < 70; i += 20) {
       double x1 =
           centerX - innerRadius3 * -cos(i * pi / 140) - size.width * .07;
@@ -1354,7 +1356,7 @@ class CustomPaintDial2 extends CustomPainter {
       myList[Range1].paint(canvas, Offset(x2, y2));
       i == 0 ? Null : myList[Range2].paint(canvas, Offset(x1, y1));
       Range1++;
-      i==0?Null:Range2--;
+      i == 0 ? Null : Range2--;
     }
     for (int i = 0; i < 70; i += 20) {
       double x1 = centerX - outerRadius * -cos(i * pi / 140);

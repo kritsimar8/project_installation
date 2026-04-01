@@ -108,13 +108,13 @@ class _SecondPageState extends State<SecondPage> {
                 height: MyHeight * .3,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 244, 67, 54),
-                child: CustomPaint(painter: CustomCFM2()),
+                child: CustomPaint(painter: CustomCFM2(CfmType: 'Indoor CFM')),
               ),
               Container(
                 height: MyHeight * .3,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 255, 235, 59),
-                child: CustomPaint(painter: CustomCFM2()),
+                child: CustomPaint(painter: CustomCFM2(CfmType: 'Outdoor CFM')),
               ),
             ],
           ),
@@ -674,160 +674,7 @@ class CustomPainterBars extends CustomPainter {
         circlePaint,
       );
     }
-    // Offset center2 = Offset(size.width*.2, size.height/2);
-    // Rect rect2 = Rect.fromLTRB(size.width*.05, size.height * .08, size.width*.08, size.height * .92);
-    // Rect rect3 = Rect.fromLTRB(size.width*.09, size.height * .08, size.width*.12, size.height * .92);
-    // Rect rect4 = Rect.fromLTRB(size.width*.13, size.height * .08, size.width*.16, size.height * .92);
-    // Rect rect5 = Rect.fromLTRB(size.width*.17, size.height * .08, size.width*.2, size.height * .92);
-    // Rect rect6 = Rect.fromLTRB(size.width*.21, size.height * .08, size.width*.24, size.height * .92);
-    // Rect rect7 = Rect.fromLTRB(size.width*.25, size.height * .08, size.width*.28, size.height * .92);
-    // Rect rect8 = Rect.fromLTRB(size.width*.29, size.height * .08, size.width*.32, size.height * .92);
-    // Rect rect9 = Rect.fromLTRB(size.width*.33, size.height * .08, size.width*.36, size.height * .92);
-    // Rect rect10 = Rect.fromLTRB(size.width*.37, size.height * .08, size.width*.4, size.height * .92);
-    // Rect rect11 = Rect.fromLTRB(size.width*.41, size.height * .08, size.width*.44, size.height * .92);
-    // Rect rect12 = Rect.fromLTRB(size.width*.45, size.height * .08, size.width*.48, size.height * .92);
-    // Rect rect13 = Rect.fromLTRB(size.width*.49, size.height * .08, size.width*.52, size.height * .92);
-    // Rect rect14 = Rect.fromLTRB(size.width*.53, size.height * .08, size.width*.56, size.height * .92);
-    // Rect rect15 = Rect.fromLTRB(size.width*.57, size.height * .08, size.width*.6, size.height * .92);
-    // Rect rect16 = Rect.fromLTRB(size.width*.61, size.height * .08, size.width*.64, size.height * .92);
-    // Rect rect17 = Rect.fromLTRB(size.width*.65, size.height * .08, size.width*.68, size.height * .92);
-    // Rect rect18 = Rect.fromLTRB(size.width*.69, size.height * .08, size.width*.72, size.height * .92);
-    // Rect rect19 = Rect.fromLTRB(size.width*.73, size.height * .08, size.width*.76, size.height * .92);
-    // Rect rect20 = Rect.fromLTRB(size.width*.77, size.height * .08, size.width*.8, size.height * .92);
-    // Rect rect21 = Rect.fromLTRB(size.width*.81, size.height * .08, size.width*.84, size.height * .92);
-    // Rect rect22 = Rect.fromLTRB(size.width*.85, size.height * .08, size.width*.88, size.height * .92);
-    // Rect rect23 = Rect.fromLTRB(size.width*.89, size.height * .08, size.width*.92, size.height * .92);
-    // Rect rect24 = Rect.fromLTRB(size.width*.93, size.height * .08, size.width*.96, size.height * .92);
-    // Rect rect25 = Rect.fromLTRB(size.width*.85, size.height * .08, size.width*.87, size.height * .92);
-    // Rect rect26 = Rect.fromLTRB(size.width*.885, size.height * .08, size.width*.905, size.height * .92);
-    // Rect rect27 = Rect.fromLTRB(size.width*.71, size.height * .08, size.width*.73, size.height * .92);
-
-    // Rect rect22 = Rect.fromLTRB(425, size.height * .08, 440, size.height * .92);
-    // Rect rect23 = Rect.fromLTRB(445, size.height * .08, 460, size.height * .92);
-    // Rect rect24 = Rect.fromLTRB(465, size.height * .08, 480, size.height * .92);
-    // Rect rect25 = Rect.fromLTRB(485, size.height * .08, 500, size.height * .92);
-
-    // canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(size.width*.008)), paint);
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect2, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect3, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect4, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect5, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect6, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect7, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect8, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect9, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect10, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect11, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect12, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect13, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect14, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect15, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect16, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect17, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect18, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect19, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect20, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect21, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect22, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect23, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect24, Radius.circular(size.width*.008)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect25, Radius.circular(5)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect26, Radius.circular(5)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect27, Radius.circular(5)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect22, Radius.circular(5)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect23, Radius.circular(5)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect24, Radius.circular(5)),
-    //   paint1,
-    // );
-    // canvas.drawRRect(
-    //   RRect.fromRectAndRadius(rect25, Radius.circular(5)),
-    //   paint1,
-    // );
+   
   }
 
   @override
@@ -837,6 +684,11 @@ class CustomPainterBars extends CustomPainter {
 }
 
 class CustomCFM2 extends CustomPainter {
+
+String CfmType;
+
+ CustomCFM2({required this.CfmType});
+
   @override
   void paint(Canvas canvas, Size size) {
     DateTime time = DateTime.now();
@@ -853,7 +705,7 @@ class CustomCFM2 extends CustomPainter {
       fontFamily: 'Text',
     );
     final textStyle3 = TextStyle(
-      color: const Color.fromARGB(255, 0, 183, 255),
+      color: CfmType == 'Indoor CFM'?const Color.fromARGB(255, 0, 183, 255):const Color.fromARGB(255, 192, 20, 20),
       fontSize: size.width * .06,
       fontFamily: 'Text',
     );
@@ -865,8 +717,8 @@ class CustomCFM2 extends CustomPainter {
     final textSpan4 = TextSpan(text: '05', style: textStyle2);
     final textSpan5 = TextSpan(text: '10', style: textStyle2);
     final textSpan6 = TextSpan(text: '15', style: textStyle2);
-    final textSpan7 = TextSpan(text: 'Indoor CFM', style: textStyle3);
-    final textSpan8 = TextSpan(text: '$myTime', style: textStyle3);
+    final textSpan7 = TextSpan(text: CfmType, style: textStyle3);
+    final textSpan8 = TextSpan(text: myTime, style: textStyle3);
 
     final textpainter = TextPainter(
       text: textSpan,
@@ -930,6 +782,14 @@ class CustomCFM2 extends CustomPainter {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     );
+    const LinearGradient gradient2 = LinearGradient(
+      colors: [
+        Color.fromARGB(255, 231, 32, 32),
+        Color.fromARGB(255, 134, 12, 12),
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
 
     final CirclePaint =
         Paint()
@@ -953,7 +813,7 @@ class CustomCFM2 extends CustomPainter {
     final CirclePaint5 =
         Paint()
           // ..color = const Color.fromARGB(255, 0, 174, 255)
-          ..shader = gradient.createShader(rect)
+          ..shader =CfmType == "Outdoor CFM"? gradient2.createShader(rect): gradient.createShader(rect)
           ..style = PaintingStyle.stroke
           ..strokeWidth = size.width * .025
           ..strokeCap = StrokeCap.round;
