@@ -27,7 +27,7 @@ class _TestState extends State<Test> {
           height: 100,
           width: 500,
           child: CustomPaint(
-            painter: CustomPainterBar(),
+            painter: CustomPainter1(),
           ),
         ),
       ),

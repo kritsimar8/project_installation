@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:installation_project/HomePage_main.dart';
+import 'package:installation_project/homePage.dart';
+import 'package:installation_project/main.dart';
+import 'package:installation_project/second_page.dart';
+import 'package:provider/provider.dart';
 
 class Intro extends StatefulWidget {
   const Intro({super.key});
@@ -10,15 +14,24 @@ class Intro extends StatefulWidget {
 }
 
 class _IntroState extends State<Intro> {
+  Route<void> newRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryanimation) => HomepageMain(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-   Future.delayed(Duration(seconds: 2),(){
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomepageMain()));
-   });
+    Future.delayed(Duration(seconds: 2), () {
+  
+        Navigator.push(context, newRoute());
+      
+    });
     double MyHeight = MediaQuery.of(context).size.height;
     double Mywidth = MediaQuery.of(context).size.width;
-
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -26,9 +39,9 @@ class _IntroState extends State<Intro> {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.only(top: MyHeight*.39),
-              height: MyHeight*.25,
-              width: Mywidth*.8,
+              margin: EdgeInsets.only(top: MyHeight * .39),
+              height: MyHeight * .25,
+              width: Mywidth * .8,
               color: const Color.fromARGB(0, 20, 255, 28),
               child: Center(
                 child: Column(
@@ -38,7 +51,7 @@ class _IntroState extends State<Intro> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.fugazOne(
                         color: const Color.fromARGB(255, 33, 240, 40),
-                        fontSize: 50
+                        fontSize: 50,
                       ),
                     ),
                     Text(
@@ -46,23 +59,33 @@ class _IntroState extends State<Intro> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.gruppo(
                         color: const Color.fromARGB(255, 33, 240, 40),
-                        fontSize: 25
+                        fontSize: 25,
                       ),
                     ),
                   ],
                 ),
-              )
+              ),
             ),
             Spacer(),
-            Text('Ambience Automation',
-            style: GoogleFonts.libreBarcode128(
-              color:  const Color.fromARGB(255, 33, 240, 40),
-              fontSize: 30
+            Text(
+              'Ambience Automation',
+              style: GoogleFonts.libreBarcode128(
+                color: const Color.fromARGB(255, 33, 240, 40),
+                fontSize: 30,
+              ),
             ),
-            )
           ],
         ),
       ),
     );
   }
 }
+
+// PageRoute ChangePage() {
+//   return PageRouteBuilder(
+//     pageBuilder: (context, animation, secondaryanimation) => HomePage(),
+//     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+//       return FadeTransition(opacity: animation, child: child);
+//     },
+//   );
+// }

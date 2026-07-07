@@ -2,12 +2,19 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:installation_project/checking.dart';
 
 class CustomPainterGauge extends CustomPainter {
+  bool isAboveThreshold;
+  CustomPainterGauge({required this.isAboveThreshold});
   @override
   void paint(Canvas canvas, Size size) {
     double centerX = size.width * .5;
     double centerY = size.height * .5;
+    Color myColor =
+         isAboveThreshold == false
+            ? const Color.fromARGB(255, 255, 115, 0)
+            : const Color.fromARGB(255, 0, 187, 255);
 
     double radius = size.width * .5;
 
@@ -65,6 +72,16 @@ class CustomPainterGauge extends CustomPainter {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
     );
+    final gradient3 = LinearGradient(
+      colors: [
+        const Color.fromARGB(255, 255, 115, 0),
+        const Color.fromARGB(255, 218, 0, 0),
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+    );
+
+    LinearGradient myGradient = isAboveThreshold ==false ? gradient3 : gradient2;
     final midPoint = Offset(size.width * .5, size.height * .5);
     final midPoint2 = Offset(size.width * .5, size.height * .48);
 
@@ -82,7 +99,7 @@ class CustomPainterGauge extends CustomPainter {
           ..style = PaintingStyle.fill;
     final circlePaint3 =
         Paint()
-          ..shader = gradient2.createShader(
+          ..shader = myGradient.createShader(
             Rect.fromCircle(center: midPoint, radius: 85),
           )
           ..color = Colors.white
@@ -116,22 +133,22 @@ class CustomPainterGauge extends CustomPainter {
           ..strokeWidth = 2;
     var paintStick4 =
         Paint()
-          ..color = const Color.fromARGB(255, 6, 168, 255)
+          ..color = myColor
           ..style = PaintingStyle.fill
           ..strokeCap = StrokeCap.round
           ..strokeWidth = 2;
     final shadowPaint =
         Paint()
-          ..color = const Color.fromARGB(255, 0, 149, 255)
+          ..color = myColor
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, size.width * .06);
     final shadowPaint2 =
         Paint()
-          ..color = const Color.fromARGB(255, 5, 188, 255)
+          ..color = myColor
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, size.width * .05);
 
     final circlePaint5 =
         Paint()
-          ..color = const Color.fromARGB(255, 0, 187, 255)
+          ..color = myColor
           ..strokeWidth = 2
           ..style = PaintingStyle.fill;
     final circlePaint7 =
@@ -151,7 +168,8 @@ class CustomPainterGauge extends CustomPainter {
           ..style = PaintingStyle.fill;
     final circlePaint9 =
         Paint()
-          ..color = const Color.fromARGB(155, 5, 188, 255)
+          // ..color = const Color.fromARGB(155, 5, 188, 255)
+          ..color = myColor
           ..strokeWidth = 2
           ..style = PaintingStyle.stroke;
 
@@ -178,7 +196,7 @@ class CustomPainterGauge extends CustomPainter {
       }
       canvas.drawLine(Offset(x5, y5), Offset(x6, y6), paintStick3);
       if (i > 380 && i < 460) {
-        canvas.drawLine(Offset(x9, y9), Offset(x7, y7), paintStick4);
+        // canvas.drawLine(Offset(x9, y9), Offset(x7, y7), paintStick4);
       }
     }
     for (int i = 0; i < 240; i += 2) {
@@ -214,31 +232,6 @@ class CustomPainterGauge extends CustomPainter {
 
     canvas.drawCircle(midPoint2, size.width * .25, shadowPaint);
     canvas.drawCircle(midPoint, size.width * .26, circlePaint7);
-
-    // final path = Path();
-    // path.moveTo(size.width * .495, size.height * .5);
-    // path.lineTo(size.width * .495, size.height * .25);
-    // path.lineTo(size.width * .51, size.height * .25);
-    // path.lineTo(size.width * .51, size.height * .5);
-    // path.lineTo(size.width * .495, size.height * .5);
-
-    // canvas.drawPath(path, paintStick);
-    // canvas.drawCircle(midPoint, size.width * .04, circlePaint6);
-   
-   
-   
-   
-   
-    // canvas.drawCircle(midPoint, size.width * .26, circlePaint8);
-    // canvas.drawCircle(midPoint, size.width * .26, circlePaint9);
-    // textPainter.paint(
-    //   canvas,
-    //   Offset(midPoint.dx - size.width * .11, midPoint.dy - size.width * .13),
-    // );
-    // textPainter2.paint(
-    //   canvas,
-    //   Offset(midPoint.dx - size.width * .039, midPoint.dy + size.width * .09),
-    // );
   }
 
   @override
@@ -247,8 +240,57 @@ class CustomPainterGauge extends CustomPainter {
   }
 }
 
+class Indicators extends CustomPainter {
+  MyIndicators myValue;
+  Indicators({required this.myValue});
+
+  int start=0;
+
+  int myFunc() {
+     start = 460- (16 * myValue.IndicatorNo);
+    //  print('$start this is second phase');
+     return start;
+  }
+
+  
+
+ 
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    double radius = size.width * .5;
+    double innerRadius2 = radius - size.width * .15;
+    double outerRadius = radius - size.width * .1;
+    double centerX = size.width * .5;
+    double centerY = size.height * .5;
+    Color myColor =
+        myValue.isAboveThreshold == false
+            ? const Color.fromARGB(255, 255, 115, 0)
+            : const Color.fromARGB(255, 0, 187, 255);
+    var paintStick4 =
+        Paint()
+          ..color = myColor
+          ..style = PaintingStyle.fill
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = 2;
+
+    for (int i = myFunc() ; i < 460; i += 4) {
+      double x7 = centerX - innerRadius2 * cos(i * pi / 260);
+      double y7 = centerY - innerRadius2 * sin(i * pi / 260);
+      double x9 = centerX - (outerRadius) * cos(i * pi / 260);
+      double y9 = centerY - (outerRadius) * sin(i * pi / 260);
+      canvas.drawLine(Offset(x9, y9), Offset(x7, y7), paintStick4);
+    }
+  }
+
+  @override 
+  bool shouldRepaint(covariant CustomPainter oldDelegate){
+    return false;
+  }
+}
+
 class Stick extends CustomPainter {
-  double rotation; 
+  double rotation;
   Stick({required this.rotation});
   @override
   void paint(Canvas canvas, Size size) {
@@ -274,9 +316,8 @@ class Stick extends CustomPainter {
 
     canvas.save();
     canvas.translate(midPoint.dx, midPoint.dy);
-     
 
-    double angle = rotation * (3.1415/180);
+    double angle = rotation * (3.1415 / 180);
 
     canvas.rotate(angle);
     canvas.translate(-midPoint.dx, -midPoint.dy);
@@ -284,26 +325,23 @@ class Stick extends CustomPainter {
 
     canvas.restore();
 
-
-   
     canvas.drawCircle(midPoint, size.width * .04, circlePaint6);
   }
-  
+
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
   }
 }
 
-class Readings extends CustomPainter{
-
+class Readings extends CustomPainter {
   final String read;
-  Readings({required this.read});
+  bool myValue;
+  Readings({required this.read, required this.myValue});
 
-
-  @override 
-  void paint(Canvas canvas , Size size){
-       final textstyle = TextStyle(
+  @override
+  void paint(Canvas canvas, Size size) {
+    final textstyle = TextStyle(
       color: const Color.fromARGB(244, 103, 101, 101),
       fontSize: size.width * .18,
       fontWeight: FontWeight.bold,
@@ -311,6 +349,11 @@ class Readings extends CustomPainter{
 
       // fontStyle: FontStyle.italic
     );
+
+    Color myColor =
+        myValue == false 
+            ? const Color.fromARGB(143, 255, 115, 0)
+            : const Color.fromARGB(144, 0, 187, 255);
     final textstyle2 = TextStyle(
       color: const Color.fromARGB(244, 103, 101, 101),
       fontSize: size.width * .05,
@@ -319,7 +362,7 @@ class Readings extends CustomPainter{
 
       // fontStyle: FontStyle.italic
     );
-
+      
     final textSpan = TextSpan(text: '00', style: textstyle);
     final textSpan2 = TextSpan(text: read, style: textstyle2);
 
@@ -334,18 +377,18 @@ class Readings extends CustomPainter{
 
     textPainter.layout(minWidth: 0, maxWidth: size.width);
     textPainter2.layout(minWidth: 0, maxWidth: size.width);
-     final midPoint = Offset(size.width * .5, size.height * .5);
-       final circlePaint8 =
+    final midPoint = Offset(size.width * .5, size.height * .5);
+    final circlePaint8 =
         Paint()
           ..color = const Color.fromARGB(108, 0, 0, 0)
           ..strokeWidth = 2
           ..style = PaintingStyle.fill;
-            final circlePaint9 =
+    final circlePaint9 =
         Paint()
-          ..color = const Color.fromARGB(155, 5, 188, 255)
+          ..color = myColor
           ..strokeWidth = 2
           ..style = PaintingStyle.stroke;
-     canvas.drawCircle(midPoint, size.width * .26, circlePaint8);
+    canvas.drawCircle(midPoint, size.width * .26, circlePaint8);
     canvas.drawCircle(midPoint, size.width * .26, circlePaint9);
     textPainter.paint(
       canvas,
@@ -356,8 +399,9 @@ class Readings extends CustomPainter{
       Offset(midPoint.dx - size.width * .039, midPoint.dy + size.width * .09),
     );
   }
-  @override 
-  bool shouldRepaint (covariant CustomPainter oldDelegate){
-    return false; 
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }

@@ -1,6 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:installation_project/DataProcessing.dart';
+import 'package:installation_project/checking.dart';
+import 'package:installation_project/main.dart';
+import 'package:provider/provider.dart';
 
 class Test5 extends StatefulWidget {
   const Test5({super.key});
@@ -13,15 +17,25 @@ class _Test5State extends State<Test5> {
   Widget build(BuildContext context) {
     double MyHeight = MediaQuery.of(context).size.height;
     double MyWidth = MediaQuery.of(context).size.width;
-
+    Provider.of<ItemData>(context, listen: false).startMqtt();
     return Scaffold(
       backgroundColor: Colors.grey,
       body: Center(
-        child: Container(
-          height: MyWidth,
-          width: MyWidth,
-          color: Colors.black,
-          child: CustomPaint(painter: CustomPaintInTemp()),
+        child: Consumer<CombinedClass>(
+          builder: (context,value,child) {
+            double oldVal = value.ampVal.AmpereVal.oldAmp!;
+            double NewVal = value.ampVal.AmpereVal.newAmp!;
+            return Container(
+              height: MyWidth,
+              width: MyWidth,
+              color: Colors.black,
+              child: Text('this is old Amp $oldVal and this currentVal $NewVal',
+              style: TextStyle(
+                color: Colors.white, 
+                fontSize: 30
+              ),),
+            );
+          }
         ),
       ),
     );

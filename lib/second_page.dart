@@ -2,7 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:installation_project/checking.dart';
+import 'package:installation_project/main.dart';
 import 'package:installation_project/test4.dart';
+import 'package:provider/provider.dart';
 
 class SecondPage extends StatefulWidget {
   const SecondPage({super.key});
@@ -10,15 +13,47 @@ class SecondPage extends StatefulWidget {
   State<SecondPage> createState() => _SecondPageState();
 }
 
-class _SecondPageState extends State<SecondPage> {
+class _SecondPageState extends State<SecondPage>
+    with SingleTickerProviderStateMixin {
+  void _onDataChanged2() {
+    if (!mounted) return;
+
+    _controller2.reset();
+    _controller2.forward();
+  }
+
+  void initState() {
+    super.initState();
+    _controller2 = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 800),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ItemData>().addListener(_onDataChanged2);
+    });
+  }
+
+  @override
+  void dispose() {
+    // context.read<ItemData>().removeListener(_onDataChanged2);
+    _controller2.dispose();
+    super.dispose();
+  }
+
+  late final AnimationController _controller2;
+
+  late Animation<double> _animation;
+
+  Animation<double> CfmAnimation(double prev, double current) {
+    return _animation = Tween<double>(begin: prev, end: current).animate(
+      CurvedAnimation(parent: _controller2, curve: Curves.fastOutSlowIn),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final MyHeight = MediaQuery.of(context).size.height;
     final MyWidth = MediaQuery.of(context).size.width;
-
-    List<Paint> points = [];
-
-    bool isFirst;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -34,8 +69,8 @@ class _SecondPageState extends State<SecondPage> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(
-                    left: MyWidth * .03,
-                    right: MyWidth * .07,
+                    left: MyWidth * .02,
+                    right: MyWidth * .08,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,13 +97,23 @@ class _SecondPageState extends State<SecondPage> {
                   height: MyHeight * .06,
                   width: MyWidth,
                   color: const Color.fromARGB(0, 244, 67, 54),
-                  child: CustomPaint(painter: CustomPainterBars(true)),
+                  child: Selector<CombinedClass, double>(
+                    selector: (p0, p1) => p1.weightVal.weightsData.TotalWeight,
+                    builder: (context, value, child) {
+                      return CustomPaint(
+                        painter: CustomPainterBars(
+                          isFirst: true,
+                          myLimit: value,
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 SizedBox(height: MyHeight * .03),
                 Padding(
                   padding: EdgeInsets.only(
                     left: MyWidth * .02,
-                    right: MyWidth * .09,
+                    right: MyWidth * .08,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +140,17 @@ class _SecondPageState extends State<SecondPage> {
                   height: MyHeight * .06,
                   width: MyWidth,
                   color: const Color.fromARGB(0, 244, 67, 54),
-                  child: CustomPaint(painter: CustomPainterBars(false)),
+                  child: Selector<CombinedClass, double>(
+                    selector: (p0, p1) => p1.weightVal.weightsData.consumedWt,
+                    builder: (context, value, child) {
+                      return CustomPaint(
+                        painter: CustomPainterBars(
+                          isFirst: false,
+                          myLimit: value,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -108,13 +163,81 @@ class _SecondPageState extends State<SecondPage> {
                 height: MyHeight * .3,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 244, 67, 54),
-                child: CustomPaint(painter: CustomCFM2(CfmType: 'Indoor CFM')),
+                child: Stack(
+                  children: [
+                  
+                    SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return AnimatedBuilder(
+                            animation:_controller2,
+                            builder: (context,child) {
+                              return CustomPaint(
+                                painter: CustomCFM2Indicator(
+                                  CfmType: 'Indoor CFM',
+                                  CfmValue:
+                                      CfmAnimation(
+                                        value.CfmVal.CfmInVal.oldCfm,
+                                        value.CfmVal.CfmInVal.NewCfm,
+                                      ).value,
+                                ),
+                              );
+                            }
+                          );
+                        },
+                      ),
+                    ),
+                      SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .48,
+                      child: CustomPaint(
+                        painter: CustomCFM2(CfmType: 'Indoor CFM'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Container(
                 height: MyHeight * .3,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 255, 235, 59),
-                child: CustomPaint(painter: CustomCFM2(CfmType: 'Outdoor CFM')),
+                child: Stack(
+                  children: [
+                   
+                    SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return AnimatedBuilder(
+                            animation:_controller2,
+                            builder: (context,child) {
+                              return CustomPaint(
+                                painter: CustomCFM2Indicator(
+                                  CfmType: 'Outdoor CFM',
+                                  CfmValue:
+                                      CfmAnimation(
+                                        value.CfmVal.CfmOutval.oldCfm,
+                                        value.CfmVal.CfmOutval.NewCfm,
+                                      ).value,
+                                ),
+                              );
+                            }
+                          );
+                        },
+                      ),
+                    ),
+                     SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .48,
+                      child: CustomPaint(
+                        painter: CustomCFM2(CfmType: 'Outdoor CFM'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -124,19 +247,91 @@ class _SecondPageState extends State<SecondPage> {
                 height: MyHeight * .3,
                 width: MyWidth * .5,
                 color: const Color.fromARGB(0, 121, 85, 72),
-                child: CustomPaint(painter: CustomHum2()),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .5,
+                      child: CustomPaint(painter: CustomHum2()),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .5,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: HumidityText(
+                              humidityvalue: value.humidityValue.HumVal,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Container(
                 height: MyHeight * .3,
                 width: MyWidth * .48,
                 color: const Color.fromARGB(0, 155, 39, 176),
-                child: CustomPaint(painter: CustomPaintInTemp2()),
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .48,
+                      child: CustomPaint(painter: CustomPaintInTemp2()),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .3,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: AmbientText(
+                              AmbVal: value.TempVal.AmbientTempVal.ambientTemp,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ],
       ),
     );
+  }
+}
+
+class AmbientText extends CustomPainter {
+  double? AmbVal;
+  AmbientText({required this.AmbVal});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final textStyle = TextStyle(
+      color: const Color.fromARGB(190, 255, 255, 255),
+      fontSize: size.width * .12,
+      fontFamily: 'Text',
+    );
+
+    final textSpan = TextSpan(text: '~$AmbVal°', style: textStyle);
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout(minWidth: 0, maxWidth: size.width);
+
+    textPainter.paint(canvas, Offset(size.width * .31  , size.height * .4));
+  }
+
+  @override
+  bool shouldRepaint(covariant AmbientText oldDelegate) {
+    return oldDelegate.AmbVal != AmbVal;
   }
 }
 
@@ -216,7 +411,7 @@ class CustomPaintInTemp2 extends CustomPainter {
     final textSpan14 = TextSpan(text: '18', style: textStyle2);
     final textSpan15 = TextSpan(text: '6', style: textStyle2);
     final textSpan16 = TextSpan(text: '12', style: textStyle2);
-    final textSpan17 = TextSpan(text: '~10°', style: textStyle4);
+    // final textSpan17 = TextSpan(text: '~$AmbVal°', style: textStyle4);
     final textSpan18 = TextSpan(text: 'Cel', style: textStyle5);
     final textSpan19 = TextSpan(text: myTime, style: textStyle6);
     final textSpan20 = TextSpan(text: 'Temperature', style: textStyle6);
@@ -285,10 +480,10 @@ class CustomPaintInTemp2 extends CustomPainter {
       text: textSpan16,
       textDirection: TextDirection.ltr,
     );
-    final textPainter17 = TextPainter(
-      text: textSpan17,
-      textDirection: TextDirection.ltr,
-    );
+    // final textPainter17 = TextPainter(
+    //   text: textSpan17,
+    //   textDirection: TextDirection.ltr,
+    // );
     final textPainter18 = TextPainter(
       text: textSpan18,
       textDirection: TextDirection.ltr,
@@ -318,7 +513,7 @@ class CustomPaintInTemp2 extends CustomPainter {
     textPainter14.layout(minWidth: 0, maxWidth: size.width);
     textPainter15.layout(minWidth: 0, maxWidth: size.width);
     textPainter16.layout(minWidth: 0, maxWidth: size.width);
-    textPainter17.layout(minWidth: 0, maxWidth: size.width);
+    // textPainter17.layout(minWidth: 0, maxWidth: size.width);
     textPainter18.layout(minWidth: 0, maxWidth: size.width);
     textPainter19.layout(minWidth: 0, maxWidth: size.width);
     textPainter20.layout(minWidth: 0, maxWidth: size.width);
@@ -414,7 +609,7 @@ class CustomPaintInTemp2 extends CustomPainter {
     textPainter14.paint(canvas, Offset(size.width * .13, size.height * .46));
     textPainter15.paint(canvas, Offset(size.width * .81, size.height * .46));
     textPainter16.paint(canvas, Offset(size.width * .45, size.height * .71));
-    textPainter17.paint(canvas, Offset(size.width * .33, size.height * .4));
+    // textPainter17.paint(canvas, Offset(size.width * .33, size.height * .4));
     textPainter18.paint(canvas, Offset(size.width * .44, size.height * .55));
     textPainter19.paint(canvas, Offset(size.width * .8, size.height * .0));
     textPainter20.paint(canvas, Offset(size.width * .05, size.height * .00));
@@ -423,6 +618,40 @@ class CustomPaintInTemp2 extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
+  }
+}
+
+class HumidityText extends CustomPainter {
+  int? humidityvalue;
+  HumidityText({required this.humidityvalue});
+  String? finalValOfHum;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final textStyle = TextStyle(
+      color: const Color.fromARGB(167, 255, 255, 255),
+      fontSize: size.width * .2,
+      fontFamily: 'Text',
+    );
+    final textStyle2 = TextStyle(
+      color: const Color.fromARGB(255, 14, 251, 255),
+      fontSize: size.width * .06,
+      fontFamily: 'Text',
+    );
+    finalValOfHum = humidityvalue == null ? '00' : humidityvalue.toString();
+    final textSpan = TextSpan(text: '$finalValOfHum%', style: textStyle);
+
+    final textPainter = TextPainter(
+      text: textSpan,
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(minWidth: 0, maxWidth: size.width);
+
+    textPainter.paint(canvas, Offset(size.width * .35, size.height * .36));
+  }
+
+  @override
+  bool shouldRepaint(covariant HumidityText oldDelegate) {
+    return oldDelegate.humidityvalue != humidityvalue;
   }
 }
 
@@ -456,14 +685,14 @@ class CustomHum2 extends CustomPainter {
       fontFamily: 'Text',
     );
 
-    final textSpan = TextSpan(text: '60%', style: textStyle);
+    // final textSpan = TextSpan(text: '$HumidityValue%', style: textStyle);
     final textSpan2 = TextSpan(text: 'Humidity', style: textStyle2);
     final textSpan3 = TextSpan(text: 'Humidity', style: textStyle3);
     final textSpan4 = TextSpan(text: myTime, style: textStyle3);
-    final textPainter = TextPainter(
-      text: textSpan,
-      textDirection: TextDirection.ltr,
-    );
+    // final textPainter = TextPainter(
+    //   text: textSpan,
+    //   textDirection: TextDirection.ltr,
+    // );
     final textPainter2 = TextPainter(
       text: textSpan2,
       textDirection: TextDirection.ltr,
@@ -476,7 +705,7 @@ class CustomHum2 extends CustomPainter {
       text: textSpan4,
       textDirection: TextDirection.ltr,
     );
-    textPainter.layout(minWidth: 0, maxWidth: size.width);
+    // textPainter.layout(minWidth: 0, maxWidth: size.width);
     textPainter2.layout(minWidth: 0, maxWidth: size.width);
     textPainter3.layout(minWidth: 0, maxWidth: size.width);
     textPainter4.layout(minWidth: 0, maxWidth: size.width);
@@ -591,22 +820,23 @@ class CustomHum2 extends CustomPainter {
       }
     }
 
-    textPainter.paint(canvas, Offset(size.width * .36, size.height * .38));
+    // textPainter.paint(canvas, Offset(size.width * .36, size.height * .38));
     textPainter2.paint(canvas, Offset(size.width * .37, size.height * .6));
     textPainter3.paint(canvas, Offset(size.width * .05, size.height * .0));
     textPainter4.paint(canvas, Offset(size.width * .8, size.height * .0));
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant CustomHum2 oldDelegate) {
     return false;
   }
 }
 
 class CustomPainterBars extends CustomPainter {
   bool isFirst;
+  double myLimit;
 
-  CustomPainterBars(this.isFirst);
+  CustomPainterBars({required this.isFirst, required this.myLimit});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -634,10 +864,13 @@ class CustomPainterBars extends CustomPainter {
     paint1.style = PaintingStyle.fill;
     final circlePaint =
         Paint()
-          ..color =isFirst? const Color.fromARGB(255, 25, 230, 32): const Color.fromARGB(255, 255, 217, 0)
+          ..color =
+              isFirst
+                  ? const Color.fromARGB(255, 25, 230, 32)
+                  : const Color.fromARGB(255, 255, 217, 0)
           ..style = PaintingStyle.fill;
 
-    for (double i = .04; i <= .96; i += .02) {
+    for (double i = .01; i <= myLimit; i += .02) {
       canvas.drawCircle(
         Offset(size.width * i, size.height * .5),
         .5,
@@ -674,20 +907,71 @@ class CustomPainterBars extends CustomPainter {
         circlePaint,
       );
     }
-   
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(covariant CustomPainterBars oldDelegate) {
+    return oldDelegate.myLimit != myLimit;
+  }
+}
+
+class CustomCFM2Indicator extends CustomPainter {
+  double CfmValue;
+  String CfmType;
+  CustomCFM2Indicator({required this.CfmValue, required this.CfmType});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Rect.fromPoints(
+      Offset(size.width * .06, size.height * .18),
+      Offset(size.width * .94, size.height * .82),
+    );
+    const LinearGradient gradient = LinearGradient(
+      colors: [
+        Color.fromARGB(255, 71, 172, 255),
+        Color.fromARGB(255, 7, 77, 255),
+      ],
+    );
+    const LinearGradient gradient2 = LinearGradient(
+      colors: [
+        Color.fromARGB(255, 231, 32, 32),
+        Color.fromARGB(255, 134, 12, 12),
+      ],
+    );
+     final CirclePaint =
+        Paint()
+          ..color = const Color.fromARGB(255, 24, 24, 24)
+          ..style = PaintingStyle.fill;
+    final CirclePaint5 =
+        Paint()
+          ..shader =
+              CfmType == "Outdoor CFM"
+                  ? gradient2.createShader(rect)
+                  : gradient.createShader(rect)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = size.width * .025
+          ..strokeCap = StrokeCap.round;
+
+             canvas.drawCircle(
+      Offset(size.width * .5, size.height * .5),
+      size.width * .5,
+      CirclePaint,
+    );
+
+    canvas.drawArc(rect, pi, CfmValue, false, CirclePaint5);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomCFM2Indicator oldDelegate) {
+    return oldDelegate.CfmValue!= CfmValue;
   }
 }
 
 class CustomCFM2 extends CustomPainter {
+  String CfmType;
+  // double CfmValue;
 
-String CfmType;
-
- CustomCFM2({required this.CfmType});
+  CustomCFM2({required this.CfmType});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -699,13 +983,17 @@ String CfmType;
       fontSize: size.width * .16,
       fontFamily: 'Text',
     );
+    
     final textStyle2 = TextStyle(
       color: const Color.fromARGB(255, 223, 223, 223),
       fontSize: size.width * .05,
       fontFamily: 'Text',
     );
     final textStyle3 = TextStyle(
-      color: CfmType == 'Indoor CFM'?const Color.fromARGB(255, 0, 183, 255):const Color.fromARGB(255, 192, 20, 20),
+      color:
+          CfmType == 'Indoor CFM'
+              ? const Color.fromARGB(255, 0, 183, 255)
+              : const Color.fromARGB(255, 192, 20, 20),
       fontSize: size.width * .06,
       fontFamily: 'Text',
     );
@@ -813,7 +1101,10 @@ String CfmType;
     final CirclePaint5 =
         Paint()
           // ..color = const Color.fromARGB(255, 0, 174, 255)
-          ..shader =CfmType == "Outdoor CFM"? gradient2.createShader(rect): gradient.createShader(rect)
+          ..shader =
+              CfmType == "Outdoor CFM"
+                  ? gradient2.createShader(rect)
+                  : gradient.createShader(rect)
           ..style = PaintingStyle.stroke
           ..strokeWidth = size.width * .025
           ..strokeCap = StrokeCap.round;
@@ -829,11 +1120,11 @@ String CfmType;
           ..style = PaintingStyle.stroke
           ..strokeWidth = size.width * .01;
 
-    canvas.drawCircle(
-      Offset(size.width * .5, size.height * .5),
-      size.width * .5,
-      CirclePaint,
-    );
+    // canvas.drawCircle(
+    //   Offset(size.width * .5, size.height * .5),
+    //   size.width * .5,
+    //   CirclePaint,
+    // );
     canvas.drawCircle(
       Offset(size.width * .5, size.height * .5),
       size.width * .38,
@@ -844,7 +1135,7 @@ String CfmType;
       size.width * .32,
       CirclePaint3,
     );
-    canvas.drawArc(rect, pi, 6, false, CirclePaint5);
+    // canvas.drawArc(rect, pi, CfmValue, false, CirclePaint5);
     for (int i = 0; i < 278; i += 4) {
       double x1 = centerX - outerRadius * cos(i * pi / 140);
       double y1 = centerY - outerRadius * sin(i * pi / 140);
@@ -879,8 +1170,8 @@ String CfmType;
       size.width * .05,
       CirclePaint6,
     );
-    textpainter.paint(canvas, Offset(size.width * .41, size.height * .39));
-    textpainter2.paint(canvas, Offset(size.width * .465, size.height * .56));
+    textpainter.paint(canvas, Offset(size.width * .4, size.height * .39));
+    textpainter2.paint(canvas, Offset(size.width * .46, size.height * .56));
     textpainter4.paint(canvas, Offset(size.width * .47, size.height * .135));
     textpainter3.paint(canvas, Offset(size.width * .04, size.height * .47));
     textpainter5.paint(canvas, Offset(size.width * .9, size.height * .47));
@@ -890,7 +1181,7 @@ String CfmType;
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant CustomCFM2 oldDelegate) {
     return false;
   }
 }

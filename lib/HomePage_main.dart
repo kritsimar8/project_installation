@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:installation_project/ButtonPage.dart';
+import 'package:installation_project/checking.dart';
 import 'package:installation_project/homePage.dart';
 import 'package:installation_project/second_page.dart';
+import 'package:provider/provider.dart';
 
 class HomepageMain extends StatefulWidget {
   const HomepageMain({super.key});
@@ -24,6 +26,7 @@ class _HomePageState extends State<HomepageMain> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ItemData>(context, listen: false).startMqtt();
     final MyHeight = MediaQuery.of(context).size.height;
     final MyWidth = MediaQuery.of(context).size.width;
     print(index);

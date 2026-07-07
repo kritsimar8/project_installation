@@ -1,9 +1,9 @@
 class state {
 
- static bool inState= false;
+ static bool inState= true;
  static double myNum = 1.95; 
 
   static void statechange(){
-    inState = true;
+    inState = false;
   } 
 }

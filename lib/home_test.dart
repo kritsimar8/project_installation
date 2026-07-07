@@ -15,7 +15,7 @@ class Test_Home extends StatefulWidget {
 
 class _Test_HomeState extends State<Test_Home> {
 
-  ItemData myProcess = ItemData();
+  ItemData myProcess = ItemData(demo:CombinedClass());
 
 
   @override
@@ -35,9 +35,9 @@ class _Test_HomeState extends State<Test_Home> {
             child: Consumer<ItemData>(
               // selector: (p0, p1) => p1.prevAmp,
               builder: (context, value, child) {
-                print(value.AmpRead?.NewAmp);
+                print(value.AmpRead?.newAmp);
                 print('top one is new checking');
-                return Text(value.AmpRead?.NewAmp.toString() ?? 'Null');
+                return Text(value.AmpRead?.newAmp.toString() ?? 'Null');
               },
             ),
           )

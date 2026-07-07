@@ -93,8 +93,8 @@ class DialPainter extends CustomPainter {
     );
     final gradient2 = LinearGradient(
       colors: [
-        const Color.fromARGB(255, 0, 191, 255),
-        const Color.fromARGB(255, 0, 20, 198),
+        const Color.fromARGB(255, 255, 115, 0),
+        const Color.fromARGB(255, 218, 0, 0),
       ],
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
@@ -131,7 +131,7 @@ class DialPainter extends CustomPainter {
           ..style = PaintingStyle.fill;
     final circlePaint5 =
         Paint()
-          ..color = const Color.fromARGB(255, 0, 187, 255)
+          ..color =   const Color.fromARGB(255, 255, 115, 0)
           ..strokeWidth = 2
           ..style = PaintingStyle.fill;
 
@@ -155,7 +155,7 @@ class DialPainter extends CustomPainter {
           ..strokeWidth = 2;
     var paintStick4 =
         Paint()
-          ..color = const Color.fromARGB(255, 6, 168, 255)
+          ..color =   const Color.fromARGB(255, 255, 115, 0)
           ..style = PaintingStyle.fill
           ..strokeCap = StrokeCap.round
           ..strokeWidth = 2;
@@ -167,11 +167,11 @@ class DialPainter extends CustomPainter {
 
     final shadowPaint =
         Paint()
-          ..color = const Color.fromARGB(255, 0, 149, 255)
+          ..color =   const Color.fromARGB(255, 255, 115, 0)
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, 20.0);
     final shadowPaint2 =
         Paint()
-          ..color = const Color.fromARGB(255, 5, 188, 255)
+          ..color =   const Color.fromARGB(255, 255, 115, 0)
           ..maskFilter = MaskFilter.blur(BlurStyle.normal, 11.0);
 
     final circlePaint7 =
@@ -186,12 +186,12 @@ class DialPainter extends CustomPainter {
           ..style = PaintingStyle.fill;
     final circlePaint9 =
         Paint()
-          ..color = const Color.fromARGB(155, 5, 188, 255)
+          ..color =   const Color.fromARGB(255, 255, 115, 0)
           ..strokeWidth = 2
           ..style = PaintingStyle.stroke;
 
-    canvas.drawCircle(midPoint, 200, circlePaint);
-    canvas.drawCircle(midPoint, 200, circlePaint2);
+    canvas.drawCircle(midPoint, 195, circlePaint);
+    canvas.drawCircle(midPoint, 195, circlePaint2);
     canvas.drawCircle(midPoint, 190, circlePaint3);
     canvas.drawCircle(midPoint, 185, circlePaint4);
     

@@ -4,8 +4,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:installation_project/Gauges.dart';
+import 'package:installation_project/checking.dart';
+import 'package:installation_project/item_list.dart';
+import 'package:installation_project/main.dart';
 import 'package:installation_project/state.dart';
 import 'package:installation_project/test2.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +23,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   late final Animation<double> _animation2 = Tween<double>(
     begin: 1,
-    end: -.1,
+    end: -0.15,
+  ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
+  late final Animation<double> _animation = Tween<double>(
+    begin: 1,
+    end: 1.95,
   ).animate(CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn));
   late final Animation<double> _animation3 = Tween<double>(
     begin: 0,
@@ -30,10 +38,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     end: 120,
   ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOutQuad));
 
-  Animation<double> rotation() {
-    late final Animation<double> _animation = Tween<double>(
-      begin: 1,
-      end: 1.95,
+  Animation<double> rotation(double? MyBegin, double? MyEnd) {
+    Animation<double> _animation = Tween<double>(
+      begin: MyBegin ?? 1,
+      end: MyEnd ?? 2.0,
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
     );
@@ -41,17 +49,48 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return _animation;
   }
 
-  void Animate() {
-    _controller.duration = Duration(milliseconds: 600);
-    _controller.forward();
-    
+  Animation<double> rotation2(double? MyBegin, double? MyEnd) {
+    Animation<double> _animation = Tween<double>(
+      begin: MyBegin,
+      end: MyEnd,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
+    );
 
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _controller.reverse();
-      }
-    });
-    state.statechange();
+    return _animation;
+  }
+
+  Animation<double> rotation3(double? MyBegin, double? MyEnd) {
+    Animation<double> _animation = Tween<double>(
+      begin: MyBegin ?? -120,
+      end: MyEnd ?? 120,
+    ).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn),
+    );
+
+    return _animation;
+  }
+  Animation<double> gasAnimation(double? prev, double? current){
+    Animation<double> _animation = Tween<double>(
+      begin: prev,
+      end:current
+    ).animate(CurvedAnimation(parent:_controller, curve: Curves.fastOutSlowIn));
+    return _animation;
+  }
+
+  int myNumber = 0;
+
+  void MyStatusListener(AnimationStatus status) {
+    if (status.isCompleted) {
+      _controller.reverse();
+    }
+  }
+
+  void _onDataChanged() {
+    if (!mounted) return;
+
+    _controller.reset();
+    _controller.forward();
   }
 
   @override
@@ -61,35 +100,45 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ItemData>().addListener(_onDataChanged);
+    });
+    InitialAnimation();
     super.initState();
+  }
+
+  void InitialAnimation() {
+    if (state.inState == true) {
+      _controller.forward();
+      _controller.addStatusListener(MyStatusListener);
+      Future.delayed(Duration(milliseconds: 3100), () {
+        _controller.removeStatusListener(MyStatusListener);
+      });
+      state.statechange();
+    }else{
+      _controller.forward();
+    }
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
+    // context.read<ItemData>().removeListener(_onDataChanged);
     _controller.dispose();
 
     super.dispose();
   }
 
   double i = 0;
-  // Future<double?> increment() async {
-  //   for (i = 0; i < 100;) {
-  //     i += 1.0;
-  //     await Future.delayed(Duration(seconds: 1));
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
-    // print(_animation.value);
-
     double FontSize = MediaQuery.textScalerOf(context).scale(1);
 
     final MyHeight = MediaQuery.of(context).size.height;
     final MyWidth = MediaQuery.of(context).size.width;
 
-    state.inState == false ? Animate() : Null;
+    // state.inState == false ? Animate() : Null;
     // Animate();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 0, 0, 0),
@@ -189,13 +238,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   height: MyHeight * .258,
                                   width: MyWidth * .288,
 
-                                  child: AnimatedBuilder(
-                                    animation: _controller,
-                                    builder: (context, child) {
-                                      return CustomPaint(
-                                        painter: CustomDial2(
-                                          rotate: rotation().value,
-                                        ),
+                                  child: Consumer<ItemData>(
+                                    builder: (context, value, child) {
+                                      // Animate();
+                                      print(value.mySTemp?.newSTemp);
+                                      return AnimatedBuilder(
+                                        animation: _controller,
+                                        builder: (context, child) {
+                                          // print(_controller);
+                                          return CustomPaint(
+                                            painter: CustomDial2(
+                                              rotate:
+                                                  rotation(
+                                                    value.mySTemp?.oldSTemp,
+                                                    value.mySTemp?.newSTemp,
+                                                  ).value,
+                                            ),
+                                          );
+                                        },
                                       );
                                     },
                                   ),
@@ -368,7 +428,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             ),
                                             child: Center(
                                               child: Text(
-                                                'D.TMP',
+                                                'D.PR',
                                                 style: GoogleFonts.bebasNeue(
                                                   fontSize: MyHeight * .017,
                                                   color: Colors.black,
@@ -405,19 +465,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 painter: CustomPainter10(),
                                               ),
                                             ),
-                                            AnimatedBuilder(
-                                              animation: _controller,
-                                              builder: (context, child) {
-                                                return SizedBox(
-                                                  height: MyHeight * .1,
-                                                  width: MyWidth * .288,
-                                                  child: CustomPaint(
-                                                    painter: CustomGasInd(
-                                                      rotate: _animation3.value,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
+                                            SizedBox(
+                                              height: MyHeight * .1,
+                                              width: MyWidth * .288,
+                                              child: Consumer<CombinedClass>(
+                                                builder: (context,value,child) {
+                                                  return AnimatedBuilder(
+                                                    animation:_controller,
+                                                    builder: (context,child) {
+                                                      return CustomPaint(
+                                                        painter: CustomGasInd(
+                                                          rotate: gasAnimation(value.gasIndVal.myGasFlow.oldState,value.gasIndVal.myGasFlow.newState).value,
+                                                        ),
+                                                      );
+                                                    }
+                                                  );
+                                                }
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -556,13 +620,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 SizedBox(
                                   height: MyHeight * .258,
                                   width: MyWidth * .288,
-                                  child: AnimatedBuilder(
-                                    animation: _animation2,
-                                    builder: (context, child) {
-                                      return CustomPaint(
-                                        painter: CustomDial3(
-                                          rotate: _animation2.value,
-                                        ),
+                                  child: Consumer<CombinedClass>(
+                                    builder: (context, value, child) {
+                                      return AnimatedBuilder(
+                                        animation: _controller,
+                                        builder: (context, child) {
+                                          return CustomPaint(
+                                            painter: CustomDial3(
+                                              rotate:
+                                                  rotation2(
+                                                    value
+                                                        .ampVal
+                                                        .AmpereVal
+                                                        .oldAmp,
+                                                    value
+                                                        .ampVal
+                                                        .AmpereVal
+                                                        .newAmp,
+                                                  ).value,
+                                            ),
+                                          );
+                                        },
                                       );
                                     },
                                   ),
@@ -591,16 +669,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: CustomPainterGauge()),
-                    ),
-                    SizedBox(
-                      height: MyHeight * .28,
-                      width: MyWidth * .48,
-                      child: AnimatedBuilder(
-                        animation: _animation4,
-                        builder: (context, child) {
+                      child: Selector<CombinedClass, bool>(
+                        selector:
+                            (p0, p1) =>
+                                p1.pressVal.SPressIndicator.isAboveThreshold,
+                        builder: (context, value, child) {
                           return CustomPaint(
-                            painter: Stick(rotation: _animation4.value),
+                            painter: CustomPainterGauge(
+                              isAboveThreshold: value,
+                            ),
                           );
                         },
                       ),
@@ -608,7 +685,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings(read: 'PSI')),
+                      child: Selector<CombinedClass, MyIndicators>(
+                        selector: (p0, p1) => p1.pressVal.SPressIndicator,
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Indicators(myValue: value),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return AnimatedBuilder(
+                            animation: _controller,
+                            builder: (context, child) {
+                              return CustomPaint(
+                                painter: Stick(
+                                  rotation:
+                                      rotation3(
+                                        value.pressVal.SucPressure.oldSPress,
+                                        value.pressVal.SucPressure.newSPress,
+                                      ).value,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Readings(
+                              read: 'PSI',
+                              myValue:
+                                  value
+                                      .pressVal
+                                      .SPressIndicator
+                                      .isAboveThreshold,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -622,16 +746,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: CustomPainterGauge()),
-                    ),
-                    SizedBox(
-                      height: MyHeight * .28,
-                      width: MyWidth * .48,
-                      child: AnimatedBuilder(
-                        animation: _animation4,
-                        builder: (context, child) {
+                      child: Selector<CombinedClass, bool>(
+                        selector:
+                            (p0, p1) =>
+                                p1.pressVal.DPressIndicator.isAboveThreshold,
+                        builder: (context, value, child) {
                           return CustomPaint(
-                            painter: Stick(rotation: _animation4.value),
+                            painter: CustomPainterGauge(
+                              isAboveThreshold: value,
+                            ),
                           );
                         },
                       ),
@@ -639,7 +762,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings(read: 'PSI')),
+                      child: Selector<CombinedClass, MyIndicators>(
+                        selector: (p0, p1) => p1.pressVal.DPressIndicator,
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Indicators(myValue: value),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return AnimatedBuilder(
+                            animation: _controller,
+                            builder: (context, child) {
+                              return CustomPaint(
+                                painter: Stick(
+                                  rotation:
+                                      rotation3(
+                                        value.pressVal.DisPressure.oldDPress,
+                                        value.pressVal.DisPressure.newDPress,
+                                      ).value,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Readings(
+                              read: 'PSI',
+                              myValue:
+                                  value
+                                      .pressVal
+                                      .DPressIndicator
+                                      .isAboveThreshold,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -658,16 +828,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: CustomPainterGauge()),
-                    ),
-                    SizedBox(
-                      height: MyHeight * .28,
-                      width: MyWidth * .48,
-                      child: AnimatedBuilder(
-                        animation: _animation4,
-                        builder: (context, child) {
+                      child: Selector<CombinedClass, bool>(
+                        selector:
+                            (p0, p1) =>
+                                p1.TempVal.InTempIndicator.isAboveThreshold,
+                        builder: (context, value, child) {
                           return CustomPaint(
-                            painter: Stick(rotation: _animation4.value),
+                            painter: CustomPainterGauge(
+                              isAboveThreshold: value,
+                            ),
                           );
                         },
                       ),
@@ -675,7 +844,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings(read: 'Cel')),
+                      child: Selector<CombinedClass, MyIndicators>(
+                        selector: (p0, p1) => p1.TempVal.InTempIndicator,
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Indicators(myValue: value),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: AnimatedBuilder(
+                        animation: _animation4,
+                        builder: (context, child) {
+                          return Consumer<CombinedClass>(
+                            builder: (context, value, child) {
+                              return CustomPaint(
+                                painter: Stick(
+                                  rotation:
+                                      rotation3(
+                                        value.TempVal.InTemperature.oldInTemp,
+                                        value.TempVal.InTemperature.newInTemp,
+                                      ).value,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Readings(
+                              read: 'Cel',
+                              myValue:
+                                  value
+                                      .TempVal
+                                      .InTempIndicator
+                                      .isAboveThreshold,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -689,16 +905,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: CustomPainterGauge()),
-                    ),
-                    SizedBox(
-                      height: MyHeight * .28,
-                      width: MyWidth * .48,
-                      child: AnimatedBuilder(
-                        animation: _animation4,
-                        builder: (context, child) {
+                      child: Selector<CombinedClass, bool>(
+                        selector:
+                            (p0, p1) =>
+                                p1.TempVal.OutTempIndicator.isAboveThreshold,
+                        builder: (context, value, child) {
                           return CustomPaint(
-                            painter: Stick(rotation: _animation4.value),
+                            painter: CustomPainterGauge(
+                              isAboveThreshold: value,
+                            ),
                           );
                         },
                       ),
@@ -706,7 +921,54 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(
                       height: MyHeight * .28,
                       width: MyWidth * .48,
-                      child: CustomPaint(painter: Readings(read: 'Cel')),
+                      child: Selector<CombinedClass, MyIndicators>(
+                        selector: (p0, p1) => p1.TempVal.OutTempIndicator,
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Indicators(myValue: value),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return AnimatedBuilder(
+                            animation: _animation4,
+                            builder: (context, child) {
+                              return CustomPaint(
+                                painter: Stick(
+                                  rotation:
+                                      rotation3(
+                                        value.TempVal.OutTemperature.oldOutTemp,
+                                        value.TempVal.OutTemperature.newOutTemp,
+                                      ).value,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      height: MyHeight * .28,
+                      width: MyWidth * .48,
+                      child: Consumer<CombinedClass>(
+                        builder: (context, value, child) {
+                          return CustomPaint(
+                            painter: Readings(
+                              read: 'Cel',
+                              myValue:
+                                  value
+                                      .TempVal
+                                      .OutTempIndicator
+                                      .isAboveThreshold,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -1349,7 +1611,7 @@ class CustomPaintDial2 extends CustomPainter {
       double y1 =
           centerY - innerRadius3 * sin(i * pi / 140) - size.height * .02;
       double x2 =
-          centerX - innerRadius2 * -cos(i * pi / 140) - size.width * .07;
+          centerX - innerRadius2 * -cos(i * pi / 140) - size.width * .03;
       double y2 =
           centerY - innerRadius2 * -sin(i * pi / 140) - size.height * .02;
 

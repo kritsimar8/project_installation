@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:installation_project/checking.dart';
+import 'package:provider/provider.dart';
 
 class ButtonPage extends StatefulWidget{
 
@@ -47,8 +49,9 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child: GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(0);
+                       Provider.of<ItemData>(context,listen:false).Sendingdata();
                       } ,
                       child: CustomPaint(
                         painter:buttonState[0]==0? CustomButtons():CustomButtons2(),
@@ -109,7 +112,7 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child:GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(1);
                       } ,
                       child: CustomPaint(
@@ -175,7 +178,7 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child: GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(2);
                       } ,
                       child: CustomPaint(
@@ -236,7 +239,7 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child:GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(3);
                       } ,
                       child: CustomPaint(
@@ -302,7 +305,7 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child:GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(4);
                       } ,
                       child: CustomPaint(
@@ -363,7 +366,7 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child:GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(5);
                       } ,
                       child: CustomPaint(
@@ -429,7 +432,7 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child:GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(6);
                       } ,
                       child: CustomPaint(
@@ -490,7 +493,7 @@ Widget build(BuildContext context){
                     width: MyWidth*.25,
                     color: const Color.fromARGB(0, 244, 67, 54),
                     child:GestureDetector(
-                      onTap: () {
+                      onLongPress: () {
                         tapped(7);
                       } ,
                       child: CustomPaint(
